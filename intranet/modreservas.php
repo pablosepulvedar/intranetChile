@@ -1,6 +1,11 @@
 <?php
 require 'conexion.php';
 $usuario = $_SESSION['usuario'];
+if($usuario == 'psepulveda'){
+    $estilo = 'style="display: block;"';
+}else{
+    $estilo = 'style="display: none;"'; 
+};
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -87,11 +92,9 @@ $usuario = $_SESSION['usuario'];
                 <td>
                     <input type="text" id="adeudado" disabled style="width: 113px;">
                 </td>
-                <?php if ($usuario == 'psepulveda') { ?>   
                 <td>
-                    <input type="text" id="idusuarioinsert" disabled>
+                    <input type="text" id="idusuarioinsert" disabled <?=$estilo?>>
                 </td>
-                <?php } ?>
             </tr>
             <tr>
                 <td>
