@@ -358,6 +358,7 @@ function irmenureservas() {
     cargarReservas()
 }
 function cargaconfirmres() {
+    /*COMENTARIO ALEATORIO */
     var cmd = 'confirm'
     $.ajax({
         url: 'command.php',
