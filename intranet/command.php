@@ -77,10 +77,14 @@ switch ($cmd) {
         $usuario        = $_REQUEST['usuario'];
         $telefono       = $_REQUEST['telefono'];
         $email          = $_REQUEST['email'];
+        $tipovuelo      = $_REQUEST['tipovuelo'];
+        if ($idHora == '' || $idHora == 0) {
+            die('Error con Horario');
+        }
         if ($idreserva == 0) {
-            $query = 'INSERT INTO `reservas`(`valorunitario`,`valorpareja`,`vueloalma`,`idhora`,`nombre`,`cantidad`,`total`,`abono`,`adeudado`,`usuario`,`fecha`,`observaciones`,`telefono`,`email`) VALUES ('.$valorUni.','.$valorDuo.','.$checkAlma.','.$idHora.',\''.$nombre.'\','.$cantidad.','.$total.','.$abono.','.$adeudado.',\''.$usuario.'\',\''.$fecha.'\',\''.$observaciones.'\',\''.$telefono.'\',\''.$email.'\')';
+            $query = 'INSERT INTO `reservas`(`valorunitario`,`valorpareja`,`vueloalma`,`idhora`,`nombre`,`cantidad`,`total`,`abono`,`adeudado`,`usuario`,`fecha`,`observaciones`,`telefono`,`email`,`tipovuelo`) VALUES ('.$valorUni.','.$valorDuo.','.$checkAlma.','.$idHora.',\''.$nombre.'\','.$cantidad.','.$total.','.$abono.','.$adeudado.',\''.$usuario.'\',\''.$fecha.'\',\''.$observaciones.'\',\''.$telefono.'\',\''.$email.'\',\''.$tipovuelo.'\')';
         } else {
-            $query = 'UPDATE `reservas` SET `valorunitario`='.$valorUni.',`valorpareja`='.$valorDuo.',`vueloalma`='.$checkAlma.',`idhora`='.$idHora.',`nombre`=\''.$nombre.'\',`cantidad`='.$cantidad.',`total`='.$total.',`abono`='.$abono.',`usuario`=\''.$usuario.'\',`fecha`=\''.$fecha.'\',`observaciones`=\''.$observaciones.'\',`telefono`=\''.$telefono.'\',`email`=\''.$email.'\' WHERE idreserva = '.$idreserva.'';
+            $query = 'UPDATE `reservas` SET `valorunitario`='.$valorUni.',`valorpareja`='.$valorDuo.',`vueloalma`='.$checkAlma.',`idhora`='.$idHora.',`nombre`=\''.$nombre.'\',`cantidad`='.$cantidad.',`total`='.$total.',`abono`='.$abono.',`usuario`=\''.$usuario.'\',`fecha`=\''.$fecha.'\',`observaciones`=\''.$observaciones.'\',`telefono`=\''.$telefono.'\',`email`=\''.$email.'\',`tipovuelo`=\''.$tipovuelo.'\' WHERE idreserva = '.$idreserva.'';
         }
         $resultado = mysqli_query($conexion, $query);
         if (!$resultado) {
@@ -153,6 +157,22 @@ case 'confirm':
                 'usuario'       => $row['usuario'],
                 'observaciones' => $row['observaciones'],
                 'valida'        => $row['valida']
+            );
+        }
+        $jsonstring = json_encode($json);
+        echo $jsonstring;
+        break;
+    case 'tipovuelos':
+        $query = "SELECT * FROM valores WHERE tipo = 'vuelo' ORDER BY orden ASC";
+        $resultado = mysqli_query($conexion, $query);
+        if (!$resultado) {
+            die('Query Error'.mysqli_error($conexion));
+        }
+        $json = array();
+        while ($row = mysqli_fetch_array($resultado)) {
+            $json[] = array(
+                'idvalor' => $row['idvalor'],
+                'valor' => $row['valor']
             );
         }
         $jsonstring = json_encode($json);

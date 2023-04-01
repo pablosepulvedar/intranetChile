@@ -75,11 +75,12 @@ switch ($cmd) {
         $adeudado       = $_REQUEST['adeudado'];
         $observaciones  = $_REQUEST['observaciones'];
         $usuario        = $_REQUEST['usuario'];
-        $telefono        = $_REQUEST['telefono'];
+        $telefono       = $_REQUEST['telefono'];
+        $email          = $_REQUEST['email'];
         if ($idreserva == 0) {
-            $query = 'INSERT INTO `reservas`(`valorunitario`,`valorpareja`,`vueloalma`,`idhora`,`nombre`,`cantidad`,`total`,`abono`,`adeudado`,`usuario`,`fecha`,`observaciones`,`telefono`) VALUES ('.$valorUni.','.$valorDuo.','.$checkAlma.','.$idHora.',\''.$nombre.'\','.$cantidad.','.$total.','.$abono.','.$adeudado.',\''.$usuario.'\',\''.$fecha.'\',\''.$observaciones.'\',\''.$telefono.'\')';
+            $query = 'INSERT INTO `reservas`(`valorunitario`,`valorpareja`,`vueloalma`,`idhora`,`nombre`,`cantidad`,`total`,`abono`,`adeudado`,`usuario`,`fecha`,`observaciones`,`telefono`,`email`) VALUES ('.$valorUni.','.$valorDuo.','.$checkAlma.','.$idHora.',\''.$nombre.'\','.$cantidad.','.$total.','.$abono.','.$adeudado.',\''.$usuario.'\',\''.$fecha.'\',\''.$observaciones.'\',\''.$telefono.'\',\''.$email.'\')';
         } else {
-            $query = 'UPDATE `reservas` SET `valorunitario`='.$valorUni.',`valorpareja`='.$valorDuo.',`vueloalma`='.$checkAlma.',`idhora`='.$idHora.',`nombre`=\''.$nombre.'\',`cantidad`='.$cantidad.',`total`='.$total.',`abono`='.$abono.',`usuario`=\''.$usuario.'\',`fecha`=\''.$fecha.'\',`observaciones`=\''.$observaciones.'\',`telefono`=\''.$telefono.'\' WHERE idreserva = '.$idreserva.'';
+            $query = 'UPDATE `reservas` SET `valorunitario`='.$valorUni.',`valorpareja`='.$valorDuo.',`vueloalma`='.$checkAlma.',`idhora`='.$idHora.',`nombre`=\''.$nombre.'\',`cantidad`='.$cantidad.',`total`='.$total.',`abono`='.$abono.',`usuario`=\''.$usuario.'\',`fecha`=\''.$fecha.'\',`observaciones`=\''.$observaciones.'\',`telefono`=\''.$telefono.'\',`email`=\''.$email.'\' WHERE idreserva = '.$idreserva.'';
         }
         $resultado = mysqli_query($conexion, $query);
         if (!$resultado) {
@@ -115,7 +116,8 @@ switch ($cmd) {
                 'usuario'       => $row['usuario'],
                 'fecha'         => $row['fecha'],
                 'observaciones' => $row['observaciones'],
-                'telefono'      => $row['telefono']
+                'telefono'      => $row['telefono'],
+                'email'         => $row['email']
             );
         }
         $jsonstring = json_encode($json);
@@ -129,6 +131,32 @@ switch ($cmd) {
             die('Query Error'.mysqli_error($conexion));
         }
         echo 'ok';
+        break;
+case 'confirm':
+        $query = "SELECT r.idreserva, v.valor AS hora, r.nombre, r.cantidad, r.total, r.abono, r.usuario, r.observaciones, r.valida FROM reservas r
+                    JOIN valores v 
+                    ON r.idhora = v.idvalor
+                    WHERE r.valida = 1 AND eliminado <> 1"; /* el % se usa para seleccionar todos los elementos que se le parezcan */
+        $resultado = mysqli_query($conexion, $query);
+        if (!$resultado) {
+            die('Query Error'.mysqli_error($conexion));
+        }
+        $json = array();
+        while ($row = mysqli_fetch_array($resultado)) {
+            $json[] = array(
+                'idreserva'     => $row['idreserva'],
+                'hora'          => $row['hora'],
+                'nombre'        => $row['nombre'],
+                'cantidad'      => $row['cantidad'],
+                'total'         => $row['total'],
+                'abono'         => $row['abono'],
+                'usuario'       => $row['usuario'],
+                'observaciones' => $row['observaciones'],
+                'valida'        => $row['valida']
+            );
+        }
+        $jsonstring = json_encode($json);
+        echo $jsonstring;
         break;
     default:
         echo 'Codigo no registrado';

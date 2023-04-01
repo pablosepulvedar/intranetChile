@@ -18,7 +18,7 @@ $idusuario = $_SESSION['usuario'];
     <table  style="width: 100%;">
         <tr>
             <td style="text-align: end;">
-                <a href="logout.php">Cerrar SesiÃ³n</a>
+                <a href="logout.php">Cerrar Sesión</a>
             </td>
             <td style="text-align: end;width: 5%">
                 <p><?=$idusuario?></p>

@@ -121,6 +121,7 @@ function modReserva(idreserva) {
                     $('#idusuarioinsert').val(reserva[0].usuario)
                     $('#observaciones').val(reserva[0].observaciones)
                     $('#telefono').val(reserva[0].telefono)
+                    $('#email').val(reserva[0].email)
                     }
                 })
         }
@@ -233,7 +234,7 @@ function modificarValores() {
         $('#valorUni').prop('disabled', false)
         $('#valorDuo').prop('disabled', false)
     } else {
-        if (confirm('Al insertar estos valores es importante que se modifiquen ambos, å¤šesta segudo que desea modificar?')) {
+        if (confirm('Al insertar estos valores es importante que se modifiquen ambos, ¿esta segudo que desea modificar?')) {
             $('#btnValores').val('Modificar Valores')
             if ($('#valorUni').val() == '') {
                 $('#valorUni').val(50000)
@@ -261,10 +262,11 @@ function limpiarFormulario() {
     $('#observaciones').val('')
     $('#idusuarioinsert').val('')
     $('#telefono').val('')
+    $('#email').val('')
 }
 function cargarHorarios() {
     var cmd = 'horarios'
-    var optionsHorarios ='<option value="0">Seleccionar</option>' 
+    var optionsHorarios ='' 
     $.ajax({
         async: false,
         url: 'command.php',
@@ -297,11 +299,29 @@ function insertarReserva() {
     var email           = $('#email').val()
     var cmd             = 'insertarReserva'
 
+    if (nombre == "") {
+        alert('El campo Nombre es obligatorio')
+        return
+    }else if(cantidad == 0 || cantidad == ''){
+        alert('El campo Cantidad es obligatorio')
+        return
+    }else if(idHora == ''){
+        alert('El campo Hora es obligatorio')
+        return
+    }else if(fecha == ''){
+        alert('El campo Fecha es obligatorio')
+        return
+    }else if(telefono == ''){
+        alert('El campo Telefono es obligatorio')
+        return
+    }
+
+
     $.ajax({
         async: false,
         url: 'command.php',
         type: 'GET',
-        data: {cmd,idreserva,valorUni,valorDuo,checkAlma,nombre,cantidad,idHora,fecha,total,abono,adeudado,observaciones,usuario,telefono}, /*Lo mismo que escribir {search: search} */
+        data: {cmd,idreserva,valorUni,valorDuo,checkAlma,nombre,cantidad,idHora,fecha,total,abono,adeudado,observaciones,usuario,telefono,email}, /*Lo mismo que escribir {search: search} */
         success: function (response) {
             if (response == 'ins ok') {
                 alert('Se ha ingresado su reserva con exito')
@@ -338,4 +358,37 @@ function irmenureservas() {
     $('#editReservas').css('display','none')
     limpiarFormulario() 
     cargarReservas()
+}
+function cargaconfirmres() {
+    var cmd = 'confirm'
+    $.ajax({
+        url: 'command.php',
+        type: 'GET',
+        data: {cmd}, /*Lo mismo que escribir {search: search} */
+        success: function (response) {
+            let reservas = JSON.parse(response)
+            let tabla = ''
+            for (let i = 0; i < reservas.length; i++) {
+                const element = reservas[i]
+                let adeudado = parseInt(element.total)-parseInt(element.abono);
+                let estado = 'No Valida'
+                let color = '#ff0202;'
+                if (element.valida == 1) {
+                    estado = 'Valida'
+                    color = '#7ee382;'
+                }
+                tabla = tabla+'<tr title="'+element.observaciones+'"><td style="background-color:'+color+'">'+estado+'</td><td>'+element.hora+'</td>'+'<td>'+element.nombre+'</td>'+'<td>'+element.cantidad+'</td>'+'<td>'+element.total+'</td>'+'<td>'+element.abono+'</td>'+'<td>'+adeudado+'</td><td>'+element.usuario+'</td>'
+                if ($('#idusuario').val() == element.usuario) {
+                    tabla = tabla+'<td><input type="button" onclick="modReserva('+element.idreserva+')" value="Modificar"></td>'
+                    tabla = tabla+'<td><input type="button" onclick="elimReserva('+element.idreserva+',\''+element.nombre+'\')" value="Eliminar"></td>'
+                }
+                tabla = tabla+'</tr>'
+            }
+            var jQueryTabla = $("<table><tr><th>Estado</th><th>Hora</th><th>Nombre</th><th>Cantidad</th><th>Total</th><th>Abono</th><th>Adeudado</th><th>Usuario</th><th>Acciones</th></tr>"+tabla+"</table>");
+            jQueryTabla.attr({
+            id:"reservas"});
+            
+            $("#tablaReservas").append(jQueryTabla);
+            }
+        })
 }

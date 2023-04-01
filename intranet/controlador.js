@@ -186,7 +186,6 @@ function comprobarPermisos(permiso) {
     return conpermiso
 }
 function insertarReserva() {
-    debugger
     var idreserva = $('#idreserva').val()
     if (idreserva == 0) {
         alert('insertar nueva')
@@ -194,17 +193,7 @@ function insertarReserva() {
         alert('Modificar existente')
     }
 }
-function cambioChekAlma(input) {
-    if (input.checked) {
-        $('#valorUni').val(66000)
-        $('#valorDuo').val(132000)
-        calcularValores()
-    } else {
-        $('#valorUni').val(50000)
-        $('#valorDuo').val(95000)
-        calcularValores()
-    }
-}
+
 function calcularValores() {
     if ($('#cantidad').val() == '') {
         $('#cantidad').val(0)
@@ -235,7 +224,7 @@ function modificarValores() {
         $('#valorUni').prop('disabled', false)
         $('#valorDuo').prop('disabled', false)
     } else {
-        if (confirm('Al insertar estos valores es importante que se modifiquen ambos, Â¿esta segudo que desea modificar?')) {
+        if (confirm('Al insertar estos valores es importante que se modifiquen ambos, ¿esta segudo que desea modificar?')) {
             $('#btnValores').val('Modificar Valores')
             if ($('#valorUni').val() == '') {
                 $('#valorUni').val(50000)
@@ -266,8 +255,8 @@ function limpiarFormulario() {
     $('#email').val('')
 }
 function cargarHorarios() {
-    var cmd = 'horarios'
-    var optionsHorarios ='' 
+    let cmd = 'horarios'
+    let optionsHorarios ='' 
     $.ajax({
         async: false,
         url: 'command.php',
@@ -279,6 +268,23 @@ function cargarHorarios() {
                 optionsHorarios = optionsHorarios+'<option value="'+horarios[i].idvalor+'">'+horarios[i].valor+'</option>' 
             }
             $('#hora').prepend(optionsHorarios);
+        }
+    })
+}
+function cargarTipoVuelo() {
+    let cmd = 'tipovuelos'
+    let optionsHorarios ='' 
+    $.ajax({
+        async: false,
+        url: 'command.php',
+        type: 'GET',
+        data: {cmd}, /*Lo mismo que escribir {search: search} */
+        success: function (response) {
+            let horarios = JSON.parse(response)
+            for (let i = 0; i < horarios.length; i++) {
+                optionsHorarios = optionsHorarios+'<option value="'+horarios[i].idvalor+'">'+horarios[i].valor+'</option>' 
+            }
+            $('#tipovuelo').prepend(optionsHorarios);
         }
     })
 }
@@ -298,6 +304,7 @@ function insertarReserva() {
     var usuario         = $('#idusuarioinsert').val()
     var telefono        = $('#telefono').val()
     var email           = $('#email').val()
+    var tipovuelo       = $('#tipovuelo').val()
     var cmd             = 'insertarReserva'
 
     if (nombre == "") {
@@ -306,11 +313,14 @@ function insertarReserva() {
     }else if(cantidad == 0 || cantidad == ''){
         alert('El campo Cantidad es obligatorio')
         return
+    }else if(idHora == ''){
+        alert('El campo Hora es obligatorio')
+        return
     }else if(fecha == ''){
         alert('El campo Fecha es obligatorio')
         return
     }else if(telefono == ''){
-        alert('El campo Fecha es obligatorio')
+        alert('El campo Telefono es obligatorio')
         return
     }
 
@@ -319,7 +329,7 @@ function insertarReserva() {
         async: false,
         url: 'command.php',
         type: 'GET',
-        data: {cmd,idreserva,valorUni,valorDuo,checkAlma,nombre,cantidad,idHora,fecha,total,abono,adeudado,observaciones,usuario,telefono,email}, /*Lo mismo que escribir {search: search} */
+        data: {cmd,idreserva,valorUni,valorDuo,checkAlma,nombre,cantidad,idHora,fecha,total,abono,adeudado,observaciones,usuario,telefono,email,tipovuelo}, /*Lo mismo que escribir {search: search} */
         success: function (response) {
             if (response == 'ins ok') {
                 alert('Se ha ingresado su reserva con exito')
@@ -358,7 +368,6 @@ function irmenureservas() {
     cargarReservas()
 }
 function cargaconfirmres() {
-    /*COMENTARIO ALEATORIO mas comentarios locos*/
     var cmd = 'confirm'
     $.ajax({
         url: 'command.php',
@@ -390,4 +399,35 @@ function cargaconfirmres() {
             $("#tablaReservas").append(jQueryTabla);
             }
         })
+}
+function cambioTipoVuelo(input) {
+    let seleccion = $("select[name='tipovuelo'] option:selected").text()
+
+    switch (seleccion) {
+        case 'Vuelo Del Alma':
+                $('#valorUni').val(66000)
+                $('#valorDuo').val(132000)
+            break;
+        case 'Cuponatic':
+                $('#valorUni').val(0)
+                $('#valorDuo').val(0)
+            break;
+        case 'Atrapalo':
+                $('#valorUni').val(0)
+                $('#valorDuo').val(0)
+            break;
+        case 'GiftCard':
+                $('#valorUni').val(50000)
+                $('#valorDuo').val(100000)
+            break;
+        case 'Otro Cupon':
+                $('#valorUni').val(0)
+                $('#valorDuo').val(0)
+            break;
+        default:
+                $('#valorUni').val(50000)
+                $('#valorDuo').val(95000)
+            break;
+    }
+    calcularValores()
 }

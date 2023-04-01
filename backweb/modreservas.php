@@ -40,16 +40,16 @@ if($usuario == 'psepulveda'){
             </tr>
             <tr>
                 <td>
-                    <label for="nombre">Nombre</label>
+                    <label for="nombre">Nombre*</label>
                 </td>
                 <td>
-                    <label for="cantidad">Cantidad</label>
+                    <label for="cantidad">Cantidad*</label>
                 </td>
                 <td>
                     <label for="hora">Hora</label>
                 </td>
                 <td>
-                    <label for="fechaForm">Fecha</label>
+                    <label for="fechaForm">Fecha*</label>
                 </td>
             </tr>
             <tr>
@@ -98,7 +98,7 @@ if($usuario == 'psepulveda'){
             </tr>
             <tr>
                 <td>
-                    <label for="telefono">Telefono</label>
+                    <label for="telefono">Telefono*</label>
                 </td>
                 <td>
                     <label for="email">Email</label>
