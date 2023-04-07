@@ -75,8 +75,9 @@ function cargarReservas() {
                 }
                 tabla = tabla+'<tr title="'+element.observaciones+'"><td style="background-color:'+color+'">'+estado+'</td><td>'+element.hora+'</td>'+'<td>'+element.nombre+'</td>'+'<td>'+element.cantidad+'</td>'+'<td>'+element.total+'</td>'+'<td>'+element.abono+'</td>'+'<td>'+adeudado+'</td><td>'+element.usuario+'</td>'
                 if ($('#idusuario').val() == element.usuario) {
-                    tabla = tabla+'<td><input type="button" onclick="modReserva('+element.idreserva+')" value="Modificar"></td>'
-                    tabla = tabla+'<td><input type="button" onclick="elimReserva('+element.idreserva+',\''+element.nombre+'\')" value="Eliminar"></td>'
+                    tabla = tabla+'<td><input type="image" src="../intranet/img/editar.png" style="border: outset;margin:0px 5px 0px 0px;" height="20" width="20"  onclick="modReserva('+element.idreserva+')" tittle="Editar"/>'
+                    tabla = tabla+'<input type="image" src="../intranet/img/Eliminar.png" style="border: outset;margin:0px 5px 0px 0px;" height="20" width="20"  onclick="elimReserva('+element.idreserva+',\''+element.nombre+'\')" tittle="Eliminar"/>'
+                    tabla = tabla+'</td>'
                 }
                 tabla = tabla+'</tr>'
             }
@@ -224,7 +225,7 @@ function modificarValores() {
         $('#valorUni').prop('disabled', false)
         $('#valorDuo').prop('disabled', false)
     } else {
-        if (confirm('Al insertar estos valores es importante que se modifiquen ambos, ¿esta segudo que desea modificar?')) {
+        if (confirm('Al insertar estos valores es importante que se modifiquen ambos, Â¿esta segudo que desea modificar?')) {
             $('#btnValores').val('Modificar Valores')
             if ($('#valorUni').val() == '') {
                 $('#valorUni').val(50000)
