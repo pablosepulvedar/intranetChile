@@ -1,5 +1,7 @@
 <?php
-    include('conexion.php');
+require 'conexion.php';
+session_start();
+$usuariosesion = $_SESSION['usuario'];
 $cmd = $_REQUEST['cmd'];
 switch ($cmd) {
     case 'reservas':
@@ -177,6 +179,22 @@ case 'confirm':
         }
         $jsonstring = json_encode($json);
         echo $jsonstring;
+        break;
+    case 'validar':
+        $idreserva = $_REQUEST['idreserva'];
+        if ($usuariosesion == 'psepulveda') {
+            $query = "UPDATE reservas SET valida=1 WHERE idreserva = ".$idreserva."";
+            $resultado = mysqli_query($conexion, $query);
+            if (!$resultado) {
+                //die('Query Error'.mysqli_error($conexion));
+                $msj = 'error';
+            } else {
+                $msj = 'Validada con Exito';
+            }  
+        } else {
+            $msj = 'Usted no puede ajecutar esta acción';
+        }
+        echo $msj;
         break;
     default:
         echo 'Codigo no registrado';
