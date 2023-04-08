@@ -34,8 +34,8 @@ if($usuario == 'psepulveda'){
                     <input type="button" id="btnValores" value="Modificar Valores" onclick="modificarValores()">
                 </td>
                 <td>
-                    <label for="alma">Vuelo del Alma</label>
-                    <input type="checkbox" id="alma" onchange="cambioChekAlma(this)">
+                    <label for="tipovuelo">Tipo: </label>
+                    <select name="tipovuelo" id="tipovuelo" style="width: 127px;" onchange="cambioTipoVuelo(this)"></select>
                 </td>
             </tr>
             <tr>

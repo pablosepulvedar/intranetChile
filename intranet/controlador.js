@@ -77,7 +77,7 @@ function cargarReservas() {
                 tabla = tabla+'<td>'
                 if ($('#idusuario').val() == element.usuario) {
                     tabla = tabla+'<input type="image" src="../intranet/img/editar.png" style="border: outset;margin:0px 5px 0px 0px;" height="15" width="15"  onclick="modReserva('+element.idreserva+')" title="Editar"/>'
-                    tabla = tabla+'<input type="image" src="../intranet/img/Eliminar.png" style="border: outset;margin:0px 5px 0px 0px;" height="15" width="15"  onclick="elimReserva('+element.idreserva+',\''+element.nombre+'\')" title="Eliminar"/>'
+                    tabla = tabla+'<input type="image" src="../intranet/img/eliminar.png" style="border: outset;margin:0px 5px 0px 0px;" height="15" width="15"  onclick="elimReserva('+element.idreserva+',\''+element.nombre+'\')" title="Eliminar"/>'
                 }
                 if (element.observaciones !='') {
                     tabla = tabla+'<input type="image" src="../intranet/img/observacion.png" style="border: outset;margin:0px 5px 0px 0px;" height="15" width="15"  onclick="alert(\''+element.observaciones+'\')" title="Observacion"/>'  
