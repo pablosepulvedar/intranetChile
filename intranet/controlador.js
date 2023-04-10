@@ -73,7 +73,9 @@ function cargarReservas() {
                     estado = 'Valida'
                     color = '#7ee382;'
                 }
-                tabla = tabla+'<tr><td style="background-color:'+color+'">'+estado+'</td><td>'+element.hora+'</td>'+'<td>'+element.nombre+'</td>'+'<td>'+element.cantidad+'</td>'+'<td>'+element.total+'</td>'+'<td>'+element.abono+'</td>'+'<td>'+adeudado+'</td><td>'+element.usuario+'</td>'
+                let telefono = '<a href="https://wa.me/'+element.telefono+'/?text=contactar" target="_blank">'+element.telefono+'</a>'
+
+                tabla = tabla+'<tr><td style="background-color:'+color+'">'+estado+'</td><td>'+element.hora+'</td>'+'<td>'+element.nombre+'</td>'+'<td>'+telefono+'</td>'+'<td>'+element.cantidad+'</td>'+'<td>'+element.total+'</td>'+'<td>'+element.abono+'</td>'+'<td>'+adeudado+'</td><td>'+element.usuario+'</td>'
                 tabla = tabla+'<td>'
                 if ($('#idusuario').val() == element.usuario) {
                     tabla = tabla+'<input type="image" src="../intranet/img/editar.png" style="border: outset;margin:0px 5px 0px 0px;" height="15" width="15"  onclick="modReserva('+element.idreserva+')" title="Editar"/>'
@@ -85,10 +87,13 @@ function cargarReservas() {
                 if (estado == 'No Valida' && $('#idusuario').val() == 'psepulveda') {
                     tabla = tabla+'<input type="image" src="../intranet/img/validar.png" style="border: outset;margin:0px 5px 0px 0px;" height="15" width="15"  onclick="validarReserva('+element.idreserva+')" title="Validar"/>'  
                 }
+                if (element.telefono != '') {
+                    tabla = tabla+'<a href="https://wa.me/'+element.telefono+'/?text=contactar"><input type="image" src="../intranet/img/whatsapp.png" style="border: outset;margin:0px 5px 0px 0px;" height="15" width="15"  title="Contactar"/></a>'                      
+                }
                 tabla = tabla+'</td>'
                 tabla = tabla+'</tr>'
             }
-            var jQueryTabla = $("<table><tr><th>Estado</th><th>Hora</th><th>Nombre</th><th>Cantidad</th><th>Total</th><th>Abono</th><th>Adeudado</th><th>Usuario</th><th>Acciones</th></tr>"+tabla+"</table>");
+            var jQueryTabla = $("<table><tr><th>Estado</th><th>Hora</th><th>Nombre</th><th>Telefono</th><th>Cantidad</th><th>Total</th><th>Abono</th><th>Adeudado</th><th>Usuario</th><th>Acciones</th></tr>"+tabla+"</table>");
             jQueryTabla.attr({
             id:"reservas"});
             
@@ -390,7 +395,7 @@ function validarReserva(idreserva) {
             }
         })
 }
-function cambioTipoVuelo(input) {
+function cambioTipoVuelo() {
     let seleccion = $("select[name='tipovuelo'] option:selected").text()
 
     switch (seleccion) {

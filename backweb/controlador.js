@@ -400,7 +400,7 @@ function cargaconfirmres() {
             }
         })
 }
-function cambioTipoVuelo(input) {
+function cambioTipoVuelo() {
     let seleccion = $("select[name='tipovuelo'] option:selected").text()
 
     switch (seleccion) {

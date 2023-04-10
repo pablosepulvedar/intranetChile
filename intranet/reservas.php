@@ -47,7 +47,7 @@ $idusuario = $_SESSION['usuario'];
             </tr>
         </table>
     </div>
-    <div id="tablaReservas"></div>
+    <div id="tablaReservas" style="text-align: center;"></div>
     <?php if ($_SESSION['permiso1']) {
             include 'modreservas.php';
         }else{

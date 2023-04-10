@@ -6,7 +6,7 @@ $cmd = $_REQUEST['cmd'];
 switch ($cmd) {
     case 'reservas':
         $fecha = $_REQUEST['fecha'];
-        $query = "SELECT r.idreserva, v.valor AS hora, r.nombre, r.cantidad, r.total, r.abono, r.usuario, r.observaciones, r.valida FROM reservas r
+        $query = "SELECT r.idreserva, v.valor AS hora, r.nombre, r.cantidad, r.total, r.abono, r.usuario, r.observaciones, r.valida, r.telefono FROM reservas r
         JOIN valores v 
         ON r.idhora = v.idvalor
         WHERE fecha = '$fecha' AND eliminado <> 1 ORDER BY hora ASC"; /* el % se usa para seleccionar todos los elementos que se le parezcan */
@@ -25,7 +25,8 @@ switch ($cmd) {
                 'abono'         => $row['abono'],
                 'usuario'       => $row['usuario'],
                 'observaciones' => $row['observaciones'],
-                'valida'        => $row['valida']
+                'valida'        => $row['valida'],
+                'telefono'      => $row['telefono']
             );
         }
         $jsonstring = json_encode($json);
