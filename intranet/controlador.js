@@ -64,6 +64,7 @@ function cargarReservas() {
         success: function (response) {
             let reservas = JSON.parse(response)
             let tabla = ''
+
             for (let i = 0; i < reservas.length; i++) {
                 const element = reservas[i]
                 let adeudado = parseInt(element.total)-parseInt(element.abono);
@@ -73,10 +74,9 @@ function cargarReservas() {
                     estado = 'Valida'
                     color = '#7ee382;'
                 }
-                let telefono = '<a href="https://wa.me/'+element.telefono+'/?text=contactar" target="_blank">'+element.telefono+'</a>'
 
-                tabla = tabla+'<tr><td style="background-color:'+color+'">'+estado+'</td><td>'+element.hora+'</td>'+'<td>'+element.nombre+'</td>'+'<td>'+telefono+'</td>'+'<td>'+element.cantidad+'</td>'+'<td>'+element.total+'</td>'+'<td>'+element.abono+'</td>'+'<td>'+adeudado+'</td><td>'+element.usuario+'</td>'
-                tabla = tabla+'<td>'
+                tabla = tabla+'<tr><td style="background-color:'+color+'">'+estado+'</td><td>'+element.hora+'</td>'+'<td>'+element.nombre+'</td>'+'<td>'+element.cantidad+'</td>'+'<td>'+element.total+'</td>'+'<td>'+element.abono+'</td>'+'<td>'+adeudado+'</td><td>'+element.usuario+'</td>'
+                tabla = tabla+'<td style="text-align:left;">'
                 if ($('#idusuario').val() == element.usuario) {
                     tabla = tabla+'<input type="image" src="../intranet/img/editar.png" style="border: outset;margin:0px 5px 0px 0px;" height="15" width="15"  onclick="modReserva('+element.idreserva+')" title="Editar"/>'
                     tabla = tabla+'<input type="image" src="../intranet/img/eliminar.png" style="border: outset;margin:0px 5px 0px 0px;" height="15" width="15"  onclick="elimReserva('+element.idreserva+',\''+element.nombre+'\')" title="Eliminar"/>'
@@ -90,10 +90,23 @@ function cargarReservas() {
                 if (element.telefono != '') {
                     tabla = tabla+'<a href="https://wa.me/'+element.telefono+'/?text=contactar"><input type="image" src="../intranet/img/whatsapp.png" style="border: outset;margin:0px 5px 0px 0px;" height="15" width="15"  title="Contactar"/></a>'                      
                 }
+                if (element.tipovuelo != 'Vuelo Libre') {
+                    let value = 'A'
+                    if (element.tipovuelo == 'Vuelo Del Alma') {
+                        value = 'VA'
+                    }else if(element.tipovuelo == 'Cuponatic'){
+                        value = 'C'
+                    }else if(element.tipovuelo == 'GiftCard'){
+                        value = 'GC'
+                    }else if(element.tipovuelo == 'Otro Cupon'){
+                        value = 'O'
+                    }
+                    tabla = tabla + '<input type="button" value="'+value+'" title="'+element.tipovuelo+'" style="border: outset;margin:0px 5px 0px 0px;height:20px;width:25px;position:absolute;padding:0px 10px 0px 0px;" onclick="alert(\''+element.tipovuelo+'\')">'
+                }
                 tabla = tabla+'</td>'
                 tabla = tabla+'</tr>'
             }
-            var jQueryTabla = $("<table><tr><th>Estado</th><th>Hora</th><th>Nombre</th><th>Telefono</th><th>Cantidad</th><th>Total</th><th>Abono</th><th>Adeudado</th><th>Usuario</th><th>Acciones</th></tr>"+tabla+"</table>");
+            var jQueryTabla = $("<table><tr><th>Estado</th><th>Hora</th><th>Nombre</th><th>Cantidad</th><th>Total</th><th>Abono</th><th>Adeudado</th><th>Usuario</th><th>Acciones</th></tr>"+tabla+"</table>");
             jQueryTabla.attr({
             id:"reservas"});
             
@@ -135,6 +148,7 @@ function modReserva(idreserva) {
                     $('#observaciones').val(reserva[0].observaciones)
                     $('#telefono').val(reserva[0].telefono)
                     $('#email').val(reserva[0].email)
+                    $('#tipovuelo').val(reserva[0].tipovuelo)
                     }
                 })
         }

@@ -6,9 +6,9 @@ $cmd = $_REQUEST['cmd'];
 switch ($cmd) {
     case 'reservas':
         $fecha = $_REQUEST['fecha'];
-        $query = "SELECT r.idreserva, v.valor AS hora, r.nombre, r.cantidad, r.total, r.abono, r.usuario, r.observaciones, r.valida, r.telefono FROM reservas r
-        JOIN valores v 
-        ON r.idhora = v.idvalor
+        $query = "SELECT r.idreserva, v.valor AS hora, r.nombre, r.cantidad, r.total, r.abono, r.usuario, r.observaciones, r.valida, r.telefono, vv.valor AS tipovuelo FROM reservas r
+        JOIN valores v ON r.idhora = v.idvalor
+        JOIN valores vv ON r.tipovuelo = vv.idvalor
         WHERE fecha = '$fecha' AND eliminado <> 1 ORDER BY hora ASC"; /* el % se usa para seleccionar todos los elementos que se le parezcan */
         $resultado = mysqli_query($conexion, $query);
         if (!$resultado) {
@@ -26,7 +26,8 @@ switch ($cmd) {
                 'usuario'       => $row['usuario'],
                 'observaciones' => $row['observaciones'],
                 'valida'        => $row['valida'],
-                'telefono'      => $row['telefono']
+                'telefono'      => $row['telefono'],
+                'tipovuelo'     => $row['tipovuelo']
             );
         }
         $jsonstring = json_encode($json);
@@ -124,7 +125,8 @@ switch ($cmd) {
                 'fecha'         => $row['fecha'],
                 'observaciones' => $row['observaciones'],
                 'telefono'      => $row['telefono'],
-                'email'         => $row['email']
+                'email'         => $row['email'],
+                'tipovuelo'     => $row['tipovuelo']
             );
         }
         $jsonstring = json_encode($json);

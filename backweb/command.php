@@ -1,12 +1,14 @@
 <?php
-    include('conexion.php');
+require 'conexion.php';
+session_start();
+$usuariosesion = $_SESSION['usuario'];
 $cmd = $_REQUEST['cmd'];
 switch ($cmd) {
     case 'reservas':
         $fecha = $_REQUEST['fecha'];
-        $query = "SELECT r.idreserva, v.valor AS hora, r.nombre, r.cantidad, r.total, r.abono, r.usuario, r.observaciones, r.valida FROM reservas r
-        JOIN valores v 
-        ON r.idhora = v.idvalor
+        $query = "SELECT r.idreserva, v.valor AS hora, r.nombre, r.cantidad, r.total, r.abono, r.usuario, r.observaciones, r.valida, r.telefono, vv.valor AS tipovuelo FROM reservas r
+        JOIN valores v ON r.idhora = v.idvalor
+        JOIN valores vv ON r.tipovuelo = vv.idvalor
         WHERE fecha = '$fecha' AND eliminado <> 1 ORDER BY hora ASC"; /* el % se usa para seleccionar todos los elementos que se le parezcan */
         $resultado = mysqli_query($conexion, $query);
         if (!$resultado) {
@@ -23,7 +25,9 @@ switch ($cmd) {
                 'abono'         => $row['abono'],
                 'usuario'       => $row['usuario'],
                 'observaciones' => $row['observaciones'],
-                'valida'        => $row['valida']
+                'valida'        => $row['valida'],
+                'telefono'      => $row['telefono'],
+                'tipovuelo'     => $row['tipovuelo']
             );
         }
         $jsonstring = json_encode($json);
@@ -121,7 +125,8 @@ switch ($cmd) {
                 'fecha'         => $row['fecha'],
                 'observaciones' => $row['observaciones'],
                 'telefono'      => $row['telefono'],
-                'email'         => $row['email']
+                'email'         => $row['email'],
+                'tipovuelo'     => $row['tipovuelo']
             );
         }
         $jsonstring = json_encode($json);
@@ -177,6 +182,22 @@ case 'confirm':
         }
         $jsonstring = json_encode($json);
         echo $jsonstring;
+        break;
+    case 'validar':
+        $idreserva = $_REQUEST['idreserva'];
+        if ($usuariosesion == 'psepulveda') {
+            $query = "UPDATE reservas SET valida=1 WHERE idreserva = ".$idreserva."";
+            $resultado = mysqli_query($conexion, $query);
+            if (!$resultado) {
+                //die('Query Error'.mysqli_error($conexion));
+                $msj = 'error';
+            } else {
+                $msj = 'Validada con Exito';
+            }  
+        } else {
+            $msj = 'Usted no puede ajecutar esta acción';
+        }
+        echo $msj;
         break;
     default:
         echo 'Codigo no registrado';

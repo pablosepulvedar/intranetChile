@@ -18,7 +18,7 @@ $idusuario = $_SESSION['usuario'];
     <table  style="width: 100%;">
         <tr>
             <td style="text-align: end;">
-                <a href="logout.php">Cerrar Sesión</a>
+                <a href="logout.php">Cerrar SesiÃ³n</a>
             </td>
             <td style="text-align: end;width: 5%">
                 <p><?=$idusuario?></p>
@@ -47,7 +47,7 @@ $idusuario = $_SESSION['usuario'];
             </tr>
         </table>
     </div>
-    <div id="tablaReservas"></div>
+    <div id="tablaReservas" style="text-align: center;"></div>
     <?php if ($_SESSION['permiso1']) {
             include 'modreservas.php';
         }else{
@@ -60,12 +60,13 @@ $idusuario = $_SESSION['usuario'];
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
         crossorigin="anonymous"></script>
-<script  src="controlador.js"></script>
+<script  src="controlador.js?v=1.3"></script>
 <script>
     window.onload = function(){
         inicFecha()
         cargarReservas()
         cargarHorarios()
+        cargarTipoVuelo()
     }
 </script>
 </body>
