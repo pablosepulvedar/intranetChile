@@ -16,6 +16,7 @@ if (mysqli_num_rows($resultado) > 0) {
         $_SESSION['usuario'] = $row['idusuario'];
         $_SESSION['permiso1'] = false;
         $_SESSION['permiso2'] = false;
+        $_SESSION['wathsapp'] = false;
         $_SESSION['inicio'] = false;
         $_SESSION['insreserva'] = false;
         $_SESSION['confirmreserva'] = false;
@@ -29,6 +30,9 @@ if (mysqli_num_rows($resultado) > 0) {
                 case 'permiso2':
                     $_SESSION['permiso2'] = true;
                     break;
+                    case 'wathsapp':
+                        $_SESSION['wathsapp'] = true;
+                        break;
                 default:
                     break;
             } 

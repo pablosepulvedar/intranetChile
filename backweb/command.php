@@ -16,6 +16,11 @@ switch ($cmd) {
         }
         $json = array();
         while ($row = mysqli_fetch_array($resultado)) {
+            if ($_SESSION['wathsapp'] == false && $_SESSION['usuario'] != $row['usuario']) {
+                $telefono = '';
+            } else {
+                $telefono = $row['telefono'];
+            }
             $json[] = array(
                 'idreserva'     => $row['idreserva'],
                 'hora'          => $row['hora'],
@@ -26,7 +31,7 @@ switch ($cmd) {
                 'usuario'       => $row['usuario'],
                 'observaciones' => $row['observaciones'],
                 'valida'        => $row['valida'],
-                'telefono'      => $row['telefono'],
+                'telefono'      => $telefono,
                 'tipovuelo'     => $row['tipovuelo']
             );
         }
