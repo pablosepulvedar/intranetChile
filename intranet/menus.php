@@ -18,17 +18,17 @@ $config         = $_SESSION['config'];
             <tr>
                 <?php if ($inicio) { ?>
                 <td>
-                    <input type="button" value="Reservas" onclick="irmenureservas()">
+                    <input type="button" value="Reservas" onclick="irmenu('reservas')">
                 </td>
                 <?php } 
                  if ($confirmreserva) { ?>
                 <td>
-                    <input type="button" value="Validar Reserva" onclick="irmenuvalidar()">
+                    <input type="button" value="Validar Reserva" onclick="irmenu('validar')">
                 </td>
                 <?php } 
                 if ($config) { ?>
                 <td>
-                    <input type="button" value="Configuración">
+                    <input type="button" value="Configuración" onclick="irmenu('config')">
                 </td>
                 <?php } ?>
             </tr>

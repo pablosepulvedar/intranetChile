@@ -397,6 +397,33 @@ function irmenureservas() {
     limpiarFormulario() 
     cargarReservas()
 }
+function irmenu(menu) {
+    switch (menu) {
+        case 'reservas':
+            $('#divvalidar').css('display', 'none')
+            $('#tablaReservas').css('display', '')
+            $('#cabecera').css('display', '')
+            $('#editReservas').css('display','none')
+            $('#divconfig').css('display', 'none')
+            limpiarFormulario() 
+            cargarReservas()
+        break;
+        case 'config':
+            $('#tablaReservas').css('display', 'none')
+            $('#cabecera').css('display', 'none')
+            $('#divvalidar').css('display', 'none')
+            $('#divconfig').css('display', '')
+        break;
+        case 'validar':
+            $('#tablaReservas').css('display', 'none')
+            $('#cabecera').css('display', 'none')
+            $('#divvalidar').css('display', '')
+            $('#divconfig').css('display', 'none')
+        break;
+        default:
+            break;
+    }
+}
 function validarReserva(idreserva) {
     var cmd = 'validar'
     $.ajax({
