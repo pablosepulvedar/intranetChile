@@ -21,6 +21,7 @@ if (mysqli_num_rows($resultado) > 0) {
         $_SESSION['insreserva'] = false;
         $_SESSION['confirmreserva'] = false;
         $_SESSION['config'] = false;
+        $_SESSION['perfil'] = $row['perfil'];
         $permisos = explode(',' , $row['permisos']);
         for ($i=0; $i < count($permisos); $i++) {
             switch ($permisos[$i]) {

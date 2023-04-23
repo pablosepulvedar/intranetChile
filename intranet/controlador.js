@@ -17,8 +17,8 @@ function login(){
             }
         })
 }
-function inicFecha() {
-    if ($("#fecha").val() == '') {
+function inicFecha(id) {
+    if ($("#"+id+"").val() == '') {
         var n = new Date()
         var y = n.getFullYear()
         var m = n.getMonth() + 1
@@ -30,11 +30,11 @@ function inicFecha() {
             d = '0'+d
         }
         var newfecha = `${y}-${m}-${d}`
-        $("#fecha").val(newfecha);  
+        $("#"+id+"").val(newfecha);  
     }
 }
-function cambiarFecha(cambio) {
-    var fecha = new Date($("#fecha").val())
+function cambiarFecha(cambio,id) {
+    var fecha = new Date($("#"+id+"").val())
     fecha.setDate(fecha.getDate() + 1)
     if (cambio == 0) {
         cambio = -1
@@ -50,7 +50,7 @@ function cambiarFecha(cambio) {
         d = '0'+d
     }
     var newfecha = `${y}-${m}-${d}`
-    $("#fecha").val(newfecha);
+    $("#"+id+"").val(newfecha);
     cargarReservas()
 }
 function cargarReservas() {
@@ -384,19 +384,6 @@ function cambiarUsuari() {
         $('#cambiarUsuario').val('Cambiar Usuario')
     }
 }
-function irmenuvalidar() {
-    $('#tablaReservas').css('display', 'none')
-    $('#cabecera').css('display', 'none')
-    $('#divvalidar').css('display', '')
-}
-function irmenureservas() {
-    $('#divvalidar').css('display', 'none')
-    $('#tablaReservas').css('display', '')
-    $('#cabecera').css('display', '')
-    $('#editReservas').css('display','none')
-    limpiarFormulario() 
-    cargarReservas()
-}
 function irmenu(menu) {
     switch (menu) {
         case 'reservas':
@@ -409,6 +396,8 @@ function irmenu(menu) {
             cargarReservas()
         break;
         case 'config':
+            inicFecha('fechaconfig')
+            cargarPeriodos()
             $('#tablaReservas').css('display', 'none')
             $('#cabecera').css('display', 'none')
             $('#divvalidar').css('display', 'none')
@@ -466,4 +455,20 @@ function cambioTipoVuelo() {
             break;
     }
     calcularValores()
+}
+function cargarPeriodos() {
+    var cmd = 'cargarperiodo'
+    let optionsPeriodos ='' 
+    $.ajax({
+        url: 'command.php',
+        type: 'GET',
+        data: {cmd}, /*Lo mismo que escribir {search: search} */
+        success: function (response) {
+            let periodos = JSON.parse(response)
+            for (let i = 0; i < periodos.length; i++) {
+                optionsPeriodos = optionsPeriodos+'<option value="'+periodos[i].periodo+'">'+periodos[i].periodo+'</option>' 
+            }
+            $('#periodo').prepend(optionsPeriodos);
+            }
+        })
 }

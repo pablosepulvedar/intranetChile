@@ -204,6 +204,22 @@ case 'confirm':
         }
         echo $msj;
         break;
+    case 'cargarperiodo':
+        $query = "SELECT DATE_FORMAT(fecha, '%m-%Y') AS periodo FROM containstructores WHERE idinstructor = 'psepulveda' GROUP BY periodo ORDER BY fecha ASC";
+            $resultado = mysqli_query($conexion, $query);
+
+            if (!$resultado) {
+                die('Query Error'.mysqli_error($conexion));
+            }
+            $json = array();
+            while ($row = mysqli_fetch_array($resultado)) {
+                $json[] = array(
+                    'periodo'     => $row['periodo']
+                );
+            }
+            $jsonstring = json_encode($json);
+            echo $jsonstring;
+        break;
     default:
         echo 'Codigo no registrado';
         break;

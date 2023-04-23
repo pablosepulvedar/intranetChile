@@ -33,9 +33,9 @@ $idusuario = $_SESSION['usuario'];
         <table>
             <tr>
                 <td>
-                    <input type="button" value="&larr;" onclick="cambiarFecha(0)">
+                    <input type="button" value="&larr;" onclick="cambiarFecha(0,'fecha')">
                     <label for="fecha">Fecha</label>
-                    <input type="button" value="&rarr;" onclick="cambiarFecha(1)">
+                    <input type="button" value="&rarr;" onclick="cambiarFecha(1,'fecha')">
                 </td>
             </tr>
             <tr>
@@ -66,7 +66,7 @@ $idusuario = $_SESSION['usuario'];
 <script  src="controlador.js?v=1.3"></script>
 <script>
     window.onload = function(){
-        inicFecha()
+        inicFecha('fecha')
         cargarReservas()
         cargarHorarios()
         cargarTipoVuelo()
