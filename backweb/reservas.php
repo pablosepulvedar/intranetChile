@@ -33,9 +33,9 @@ $idusuario = $_SESSION['usuario'];
         <table>
             <tr>
                 <td>
-                    <input type="button" value="&larr;" onclick="cambiarFecha(0)">
+                    <input type="button" value="&larr;" onclick="cambiarFecha(0,'fecha')">
                     <label for="fecha">Fecha</label>
-                    <input type="button" value="&rarr;" onclick="cambiarFecha(1)">
+                    <input type="button" value="&rarr;" onclick="cambiarFecha(1,'fecha')">
                 </td>
             </tr>
             <tr>
@@ -56,14 +56,17 @@ $idusuario = $_SESSION['usuario'];
     if ($_SESSION['confirmreserva']) {
         include 'validarreserva.php';
     }
+    if ($_SESSION['config']) {
+        include 'configuracion.php';
+    }
     ?>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
         crossorigin="anonymous"></script>
-<script  src="controlador.js?v=1.3"></script>
+<script  src="controlador.js?v=1.4"></script>
 <script>
     window.onload = function(){
-        inicFecha()
+        inicFecha('fecha')
         cargarReservas()
         cargarHorarios()
         cargarTipoVuelo()

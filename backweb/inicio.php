@@ -18,7 +18,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <input type="text" id="usuario" name="usuario" value="psepulveda">
+                        <input type="text" id="usuario" name="usuario" value="">
                     </td>
                 </tr>
                 <tr>
@@ -28,7 +28,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <input type="password" name="password" id="password" value="cordrack88">
+                        <input type="password" name="password" id="password" value="">
                     </td>
                 </tr>
                 <tr style="text-align: center;">

@@ -205,7 +205,7 @@ case 'confirm':
         echo $msj;
         break;
     case 'cargarperiodo':
-        $query = "SELECT DATE_FORMAT(fecha, '%m-%Y') AS periodo FROM containstructores WHERE idinstructor = 'psepulveda' GROUP BY periodo ORDER BY fecha ASC";
+        $query = "SELECT DATE_FORMAT(fecha, '%m-%Y') AS periodo , DATE_FORMAT(fecha, '%Y-%m') AS periodovalue FROM containstructores WHERE idinstructor = '".$_SESSION['usuario']."' GROUP BY periodo ORDER BY fecha ASC";
             $resultado = mysqli_query($conexion, $query);
 
             if (!$resultado) {
@@ -214,11 +214,30 @@ case 'confirm':
             $json = array();
             while ($row = mysqli_fetch_array($resultado)) {
                 $json[] = array(
-                    'periodo'     => $row['periodo']
+                    'periodo'     => $row['periodo'],
+                    'periodovalue'=> $row['periodovalue']
                 );
             }
             $jsonstring = json_encode($json);
             echo $jsonstring;
+        break;
+    case 'reginstructores':
+        $periodo = $_REQUEST['periodo'];
+        $query = "SELECT DATE_FORMAT(fecha, '%d-%m-%Y') AS fecha, cantidadvuelos FROM containstructores WHERE idinstructor = '".$_SESSION['usuario']."' AND fecha LIKE '%".$periodo."%' ORDER BY fecha ASC ";
+        $resultado = mysqli_query($conexion, $query);
+
+        if (!$resultado) {
+            die('Query Error'.mysqli_error($conexion));
+        }
+        $json = array();
+        while ($row = mysqli_fetch_array($resultado)) {
+            $json[] = array(
+                'fecha'         => $row['fecha'],
+                'cantidadvuelos'=> $row['cantidadvuelos']
+            );
+        }
+        $jsonstring = json_encode($json);
+        echo $jsonstring;
         break;
     default:
         echo 'Codigo no registrado';

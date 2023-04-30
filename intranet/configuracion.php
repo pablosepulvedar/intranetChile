@@ -5,6 +5,14 @@ if ($configura) {
     $query = "SELECT u.nombre, sum(c.cantidadvuelos) AS totalvuelos FROM containstructores c JOIN usuarios u ON u.idusuario = c.idinstructor WHERE u.idusuario = '$usuario'";
     $resultado = mysqli_query($conexion, $query);
     $row = mysqli_fetch_array($resultado);
+    $canttotal = $row['totalvuelos'];
+    $minutos = $canttotal*15;
+    $horas = intval(($minutos/60));
+    $minutos = ($minutos/60-$horas)*60;
+    if ($minutos < 10) {
+        $minutos = '0'.$minutos;
+    }
+
 }
 ?>
 <!DOCTYPE html>
@@ -21,24 +29,11 @@ if ($configura) {
             <h1>Configuración</h1>
             <p>Configuraciones de <?= $row['nombre'] ?></p>
             <?php if ($_SESSION['perfil'] == 'instructor') { ?>
-                <p>Cantidad de vuelos este año: <?= $row['totalvuelos'] ?></p>
+                <p>Cantidad de vuelos este año: <?= $canttotal ?> &rarr; $<?= $canttotal*20000 ?></p>
+                <p>Cantidad Horas (Aprox 15 min por vuelos): &rarr; <?= $horas.' Horas '.$minutos.' Minutos' ?></p>
                 <h2>Detalles</h2>
-                <select name="periodo" id="periodo"></select>
-                <table>
-                    <tr>
-                        <td>
-                            <input type="button" value="&larr;" onclick="cambiarFecha(0,'fechaconfig')">
-                            <label for="fechaconfig">Fecha</label>
-                            <input type="button" value="&rarr;" onclick="cambiarFecha(1,'fechaconfig')">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="date" name="fechaconfig" id="fechaconfig">
-                            <input type="button" onclick="cargarReservas()" value="Buscar">
-                        </td>
-                    </tr>
-                </table>
+                <select name="periodo" id="periodo" onchange="cargarRegInstructores()"></select>
+                <div id="tablaRegInstructores" style="text-align: center;"></div>
             <?php } ?>
         </div>
     <?php } ?>

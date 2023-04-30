@@ -17,8 +17,8 @@ function login(){
             }
         })
 }
-function inicFecha() {
-    if ($("#fecha").val() == '') {
+function inicFecha(id) {
+    if ($("#"+id+"").val() == '') {
         var n = new Date()
         var y = n.getFullYear()
         var m = n.getMonth() + 1
@@ -30,11 +30,11 @@ function inicFecha() {
             d = '0'+d
         }
         var newfecha = `${y}-${m}-${d}`
-        $("#fecha").val(newfecha);  
+        $("#"+id+"").val(newfecha);  
     }
 }
-function cambiarFecha(cambio) {
-    var fecha = new Date($("#fecha").val())
+function cambiarFecha(cambio,id) {
+    var fecha = new Date($("#"+id+"").val())
     fecha.setDate(fecha.getDate() + 1)
     if (cambio == 0) {
         cambio = -1
@@ -50,7 +50,7 @@ function cambiarFecha(cambio) {
         d = '0'+d
     }
     var newfecha = `${y}-${m}-${d}`
-    $("#fecha").val(newfecha);
+    $("#"+id+"").val(newfecha);
     cargarReservas()
 }
 function cargarReservas() {
@@ -384,18 +384,34 @@ function cambiarUsuari() {
         $('#cambiarUsuario').val('Cambiar Usuario')
     }
 }
-function irmenuvalidar() {
-    $('#tablaReservas').css('display', 'none')
-    $('#cabecera').css('display', 'none')
-    $('#divvalidar').css('display', '')
-}
-function irmenureservas() {
-    $('#divvalidar').css('display', 'none')
-    $('#tablaReservas').css('display', '')
-    $('#cabecera').css('display', '')
-    $('#editReservas').css('display','none')
-    limpiarFormulario() 
-    cargarReservas()
+function irmenu(menu) {
+    switch (menu) {
+        case 'reservas':
+            $('#divvalidar').css('display', 'none')
+            $('#tablaReservas').css('display', '')
+            $('#cabecera').css('display', '')
+            $('#editReservas').css('display','none')
+            $('#divconfig').css('display', 'none')
+            limpiarFormulario() 
+            cargarReservas()
+        break;
+        case 'config':
+            inicFecha('fechaconfig')
+            cargarPeriodos()
+            $('#tablaReservas').css('display', 'none')
+            $('#cabecera').css('display', 'none')
+            $('#divvalidar').css('display', 'none')
+            $('#divconfig').css('display', '')
+        break;
+        case 'validar':
+            $('#tablaReservas').css('display', 'none')
+            $('#cabecera').css('display', 'none')
+            $('#divvalidar').css('display', '')
+            $('#divconfig').css('display', 'none')
+        break;
+        default:
+            break;
+    }
 }
 function validarReserva(idreserva) {
     var cmd = 'validar'
@@ -439,4 +455,55 @@ function cambioTipoVuelo() {
             break;
     }
     calcularValores()
+}
+function cargarPeriodos() {
+    var cmd = 'cargarperiodo'
+    let optionsPeriodos ='' 
+    $("#periodo").empty()
+    $.ajax({
+        url: 'command.php',
+        type: 'GET',
+        data: {cmd}, /*Lo mismo que escribir {search: search} */
+        success: function (response) {
+            let periodos = JSON.parse(response)
+            for (let i = 0; i < periodos.length; i++) {
+                optionsPeriodos = optionsPeriodos+'<option value="'+periodos[i].periodovalue+'">'+periodos[i].periodo+'</option>' 
+            }
+            $('#periodo').prepend(optionsPeriodos);
+            cargarRegInstructores()
+            }
+        })
+}
+function cargarRegInstructores() {
+    let periodo = $("#periodo").val()
+    let cmd = 'reginstructores'
+    $("#tablaRegInstructores").empty()
+    $.ajax({
+        url: 'command.php',
+        type: 'GET',
+        data: {cmd,periodo}, /*Lo mismo que escribir {search: search} */
+        success: function (response) {
+            let vuelos = JSON.parse(response)
+            let tabla = ''
+            let cantidadmensual = 0
+            for (let i = 0; i < vuelos.length; i++) {
+                const element = vuelos[i]
+                cantidadmensual = parseInt(cantidadmensual)  + parseInt(element.cantidadvuelos)
+
+                tabla = tabla+'<tr><td>'+element.fecha+'</td><td>'+element.cantidadvuelos+'</td><td>$'+parseInt(element.cantidadvuelos)*20000
+
+                tabla = tabla+'</td>'
+                tabla = tabla+'</tr>'
+
+                if (i+1 == vuelos.length) {
+                    tabla = tabla + '<tr style="font-weight: bold;"><td>Totales</td><td>'+cantidadmensual+'</td><td>$'+cantidadmensual*20000+'</td></tr>'
+                }
+            }
+            var jQueryTabla = $("<table><tr><th>Fecha</th><th>Vuelos</th><th>Pagos</th></tr>"+tabla+"</table>");
+            jQueryTabla.attr({
+            id:"tablavuelos"});
+            
+            $("#tablaRegInstructores").append(jQueryTabla);           
+            }
+        })
 }

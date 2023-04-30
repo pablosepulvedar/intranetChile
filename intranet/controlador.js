@@ -459,6 +459,7 @@ function cambioTipoVuelo() {
 function cargarPeriodos() {
     var cmd = 'cargarperiodo'
     let optionsPeriodos ='' 
+    $("#periodo").empty()
     $.ajax({
         url: 'command.php',
         type: 'GET',
@@ -466,9 +467,43 @@ function cargarPeriodos() {
         success: function (response) {
             let periodos = JSON.parse(response)
             for (let i = 0; i < periodos.length; i++) {
-                optionsPeriodos = optionsPeriodos+'<option value="'+periodos[i].periodo+'">'+periodos[i].periodo+'</option>' 
+                optionsPeriodos = optionsPeriodos+'<option value="'+periodos[i].periodovalue+'">'+periodos[i].periodo+'</option>' 
             }
             $('#periodo').prepend(optionsPeriodos);
+            cargarRegInstructores()
+            }
+        })
+}
+function cargarRegInstructores() {
+    let periodo = $("#periodo").val()
+    let cmd = 'reginstructores'
+    $("#tablaRegInstructores").empty()
+    $.ajax({
+        url: 'command.php',
+        type: 'GET',
+        data: {cmd,periodo}, /*Lo mismo que escribir {search: search} */
+        success: function (response) {
+            let vuelos = JSON.parse(response)
+            let tabla = ''
+            let cantidadmensual = 0
+            for (let i = 0; i < vuelos.length; i++) {
+                const element = vuelos[i]
+                cantidadmensual = parseInt(cantidadmensual)  + parseInt(element.cantidadvuelos)
+
+                tabla = tabla+'<tr><td>'+element.fecha+'</td><td>'+element.cantidadvuelos+'</td><td>$'+parseInt(element.cantidadvuelos)*20000
+
+                tabla = tabla+'</td>'
+                tabla = tabla+'</tr>'
+
+                if (i+1 == vuelos.length) {
+                    tabla = tabla + '<tr style="font-weight: bold;"><td>Totales</td><td>'+cantidadmensual+'</td><td>$'+cantidadmensual*20000+'</td></tr>'
+                }
+            }
+            var jQueryTabla = $("<table><tr><th>Fecha</th><th>Vuelos</th><th>Pagos</th></tr>"+tabla+"</table>");
+            jQueryTabla.attr({
+            id:"tablavuelos"});
+            
+            $("#tablaRegInstructores").append(jQueryTabla);           
             }
         })
 }
