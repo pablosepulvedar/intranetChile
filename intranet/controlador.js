@@ -507,3 +507,35 @@ function cargarRegInstructores() {
             }
         })
 }
+function cambiarPass() {
+    let pass = $("#pass").val()
+    let nuevapass = $("#nuevapass").val()
+    let confirmpass = $("#confirmpass").val()
+    let cmd = 'cambioClave'
+    if (pass == '') {
+        alert('Debe ingresar el campo "Contraseña Actual"')
+        return
+    }else if(nuevapass == ''){
+        alert('Debe ingresar el campo "Nueva Contraseña"')
+        return
+    }else if(confirmpass == ''){  
+        alert('Debe ingresar el campo "Confirmar Nueva Contraseña"')
+        return
+    }else if(nuevapass != confirmpass){
+        alert('Las contraseñas no coinciden')
+        return
+    }
+    $.ajax({
+        url: 'command.php',
+        type: 'GET',
+        data: {cmd,pass,nuevapass,confirmpass}, /*Lo mismo que escribir {search: search} */
+        success: function (response) {
+            if (response == 'Cambio de contraseña exitoso') {
+                $("#pass").val('')
+                $("#nuevapass").val('')
+                $("#confirmpass").val('')
+            }
+            alert(response) 
+            }
+        })
+}

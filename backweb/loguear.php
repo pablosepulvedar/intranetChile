@@ -3,7 +3,7 @@ require 'conexion.php';
 session_start();
 
 $usuario = $_POST['usuario'];
-$password = $_POST['password'];
+$password = md5($_POST['password'].'@chileparapente');
 
 $query = "SELECT * FROM usuarios WHERE idusuario = '$usuario' AND password = '$password'"; /* el % se usa para seleccionar todos los elementos que se le parezcan */
 $resultado = mysqli_query($conexion, $query);
@@ -31,9 +31,9 @@ if (mysqli_num_rows($resultado) > 0) {
                 case 'permiso2':
                     $_SESSION['permiso2'] = true;
                     break;
-                    case 'wathsapp':
-                        $_SESSION['wathsapp'] = true;
-                        break;
+                case 'wathsapp':
+                    $_SESSION['wathsapp'] = true;
+                    break;
                 default:
                     break;
             } 

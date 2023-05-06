@@ -3,9 +3,9 @@ require 'conexion.php';
 session_start();
 
 $usuario = $_POST['usuario'];
-$password = $_POST['password'];
+$password = md5($_POST['password'].'@chileparapente');
 
-$query = "SELECT * FROM usuarios WHERE idusuario = '$usuario' AND password = '$password'"; /* el % se usa para seleccionar todos los elementos que se le parezcan */
+$query = "SELECT * FROM usuarios WHERE idusuario = '$usuario' AND password = '$password'";
 $resultado = mysqli_query($conexion, $query);
 if (!$resultado) {
     die('Query Error'.mysqli_error($conexion));

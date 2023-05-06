@@ -205,7 +205,7 @@ case 'confirm':
         echo $msj;
         break;
     case 'cargarperiodo':
-        $query = "SELECT DATE_FORMAT(fecha, '%m-%Y') AS periodo , DATE_FORMAT(fecha, '%Y-%m') AS periodovalue FROM containstructores WHERE idinstructor = '".$_SESSION['usuario']."' GROUP BY periodo ORDER BY fecha ASC";
+        $query = "SELECT DATE_FORMAT(fecha, '%m-%Y') AS periodo , DATE_FORMAT(fecha, '%Y-%m') AS periodovalue FROM containstructores WHERE idinstructor = '".$_SESSION['usuario']."' GROUP BY periodo ORDER BY fecha DESC";
             $resultado = mysqli_query($conexion, $query);
 
             if (!$resultado) {
@@ -238,6 +238,30 @@ case 'confirm':
         }
         $jsonstring = json_encode($json);
         echo $jsonstring;
+        break;
+    case 'cambioClave':
+        $pass = $_REQUEST['pass'];
+        $nuevapass = $_REQUEST['nuevapass'];
+        $confirmpass = $_REQUEST['confirmpass'];
+        $pass = md5($pass.'@chileparapente');
+
+        $query = "SELECT * FROM usuarios WHERE idusuario = '$usuariosesion' AND password = '$pass'"; /* el % se usa para seleccionar todos los elementos que se le parezcan */
+        $resultado = mysqli_query($conexion, $query);
+        if (!$resultado) {
+            die('Query Error'.mysqli_error($conexion));
+        }
+
+        if (mysqli_num_rows($resultado) > 0) {
+            $nuevapass = md5($nuevapass.'@chileparapente');
+            $query = "UPDATE usuarios SET password='$nuevapass' WHERE idusuario = '$usuariosesion' AND password = '$pass'";
+            $resultado = mysqli_query($conexion, $query);
+            if (!$resultado) {
+                die('Query Error'.mysqli_error($conexion));
+            }
+            die('Cambio de contraseña exitoso');
+        } else {
+            die('Contraseña Incorrecta');
+        }
         break;
     default:
         echo 'Codigo no registrado';
