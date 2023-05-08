@@ -2,7 +2,7 @@
 $configura = $_SESSION['config'];
 if ($configura) {
     require 'conexion.php';
-    $query = "SELECT u.nombre, sum(c.cantidadvuelos) AS totalvuelos FROM containstructores c JOIN usuarios u ON u.idusuario = c.idinstructor WHERE u.idusuario = '$usuario'";
+    $query = "SELECT u.nombre, sum(c.cantidadvuelos) AS totalvuelos FROM containstructores c JOIN usuarios u ON u.idusuario = c.idinstructor WHERE u.idusuario = '$usuario' AND fecha LIKE '%2023%'";
     $resultado = mysqli_query($conexion, $query);
     $row = mysqli_fetch_array($resultado);
     $canttotal = $row['totalvuelos'];
