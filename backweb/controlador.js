@@ -74,7 +74,7 @@ function cargarReservas() {
                     estado = 'Valida'
                     color = '#7ee382;'
                 }
-
+                let contactar = 'Buen día! Te recuerdo el vuelo de mañana. Te recomiendo estar de 15 a 30 min de anticipación en el lugar y traer gafas de sol, abrigo, zapatillas o bototos y pantalones largos para una mejor experiencia'
                 tabla = tabla+'<tr><td style="background-color:'+color+'">'+estado+'</td><td>'+element.hora+'</td>'+'<td>'+element.nombre+'</td>'+'<td>'+element.cantidad+'</td>'+'<td>'+element.total+'</td>'+'<td>'+element.abono+'</td>'+'<td>'+adeudado+'</td><td>'+element.usuario+'</td>'
                 tabla = tabla+'<td style="text-align:left;">'
                 if ($('#idusuario').val() == element.usuario) {
@@ -88,7 +88,7 @@ function cargarReservas() {
                     tabla = tabla+'<input type="image" src="../intranet/img/validar.png" style="border: outset;margin:0px 5px 0px 0px;" height="15" width="15"  onclick="validarReserva('+element.idreserva+')" title="Validar"/>'  
                 }
                 if (element.telefono != '') {
-                    tabla = tabla+'<a href="https://wa.me/'+element.telefono+'/?text=contactar"><input type="image" src="../intranet/img/whatsapp.png" style="border: outset;margin:0px 5px 0px 0px;" height="15" width="15"  title="Contactar"/></a>'                      
+                    tabla = tabla+'<a href="https://wa.me/'+element.telefono+'/?text='+contactar+'"><input type="image" src="../intranet/img/whatsapp.png" style="border: outset;margin:0px 5px 0px 0px;" height="15" width="15"  title="Contactar"/></a>'                      
                 }
                 if (element.tipovuelo != 'Vuelo Libre') {
                     let value = 'A'
