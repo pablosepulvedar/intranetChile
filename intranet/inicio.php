@@ -82,7 +82,7 @@ if (!empty($_REQUEST['error'])) {
 <body>
     <div class="login-container">
         <h2>Iniciar Sesión</h2>
-        <form action="loguear.php" method="POST">
+        <form action="intranet/loguear.php" method="POST">
             <div class="input-group">
                 <label for="empresa">Empresa</label>
                 <input type="text" id="empresa" name="empresa" required>
