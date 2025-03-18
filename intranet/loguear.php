@@ -1,16 +1,33 @@
 <?php
-require 'conexion.php';
+require 'conexion.php';  // Asegúrate de tener la conexión a PostgreSQL en este archivo
 session_start();
 
-$usuario = $_POST['usuario'];
-$password = md5($_POST['password'].'@chileparapente');
+$empresa = $_POST['empresa'];
+$usuario = $_POST['username'];
+$password = $_POST['password'];
+//$password = md5($_POST['password'].'@chileparapente');
 
-$query = "SELECT * FROM usuarios WHERE idusuario = '$usuario' AND password = '$password'";
-$resultado = mysqli_query($conexion, $query);
+// Realizar la consulta con pg_query_params para prevenir inyecciones SQL
+$query = "SELECT * FROM usuarios WHERE usuario = $1 AND contraseña = $2";
+$resultado = pg_query_params($conn, $query, array($usuario, $password));
+
+// Verificar si la consulta devolvió algún resultado
 if (!$resultado) {
-    die('Query Error'.mysqli_error($conexion));
+    die('Query Error: ' . pg_last_error($conn));  // Usar pg_last_error() para PostgreSQL
 }
-//$array = mysqli_fetch_array($resultado);
+
+// Verificar si el usuario existe
+if (pg_num_rows($resultado) > 0) {
+    // Si el usuario existe, puedes iniciar sesión
+    $_SESSION['usuario'] = $usuario;
+    // Redirigir al usuario a una página protegida (por ejemplo, dashboard.php)
+    header('location: reservas.php');
+    exit();
+} else {
+    header('location: ../intranet.php?error=true');
+    // Si no existe, mostrar un mensaje de error
+    //echo "Usuario o contraseña incorrectos.";
+}/*
 if (mysqli_num_rows($resultado) > 0) {
     while ($row = mysqli_fetch_array($resultado)) {
         $_SESSION['usuario'] = $row['idusuario'];
@@ -61,5 +78,5 @@ if (mysqli_num_rows($resultado) > 0) {
     header('location: reservas.php');
 } else {
     header('location: ../intranet.php?error=true');
-}
+}*/
 ?>
