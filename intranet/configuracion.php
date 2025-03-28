@@ -1,5 +1,5 @@
 <?php 
-$configura = $_SESSION['config'];
+$configura = false;//$_SESSION['config'];
 if ($configura) {
     require 'conexion.php';
     $query = "SELECT u.nombre, sum(c.cantidadvuelos) AS totalvuelos FROM containstructores c JOIN usuarios u ON u.idusuario = c.idinstructor WHERE u.idusuario = '$usuario' AND fecha LIKE '%2023%'";

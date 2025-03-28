@@ -26,7 +26,7 @@
     if (!$conn) {
         echo "Error en la conexión a la base de datos.";
     } else {
-        echo "Conexión exitosa a la base de datos.";
+        //echo "Conexión exitosa a la base de datos.";
     }
     
     // Cerrar la conexión al final

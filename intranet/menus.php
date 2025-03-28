@@ -1,8 +1,8 @@
 <?php
-$inicio         = $_SESSION['inicio'];
-$insreserva     = $_SESSION['insreserva'];
-$confirmreserva = $_SESSION['confirmreserva'];
-$config         = $_SESSION['config'];
+$inicio         = true;//$_SESSION['inicio'];
+$insreserva     = true;//$_SESSION['insreserva'];
+$confirmreserva = true;//$_SESSION['confirmreserva'];
+$config         = true;//$_SESSION['config'];
 ?>
 <!DOCTYPE html>
 <html lang="en">

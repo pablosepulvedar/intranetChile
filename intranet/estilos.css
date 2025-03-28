@@ -7,13 +7,56 @@
 }
 
 body {
-    display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     background: linear-gradient(135deg, #667eea, #764ba2);
 }
 
+/* Contenedor centrado */
+.contenedor {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    /*height: 100vh;*/
+    padding: 20px;
+    overflow: hidden;
+}
+
+/* Cabecera con botón de fecha */
+#cabecera {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+/* Estilos para la tabla de reservas */
+#tablaReservas {
+    width: 100%;
+    margin: 20px auto;
+    text-align: left !important;
+}
+
+/* Estilos para los campos de entrada y botones */
+input[type="button"], input[type="date"] {
+    margin: 10px;
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+/* Estilos para la tabla */
+table {
+    margin-bottom: 20px;
+}
+
+table td {
+    padding: 8px;
+    text-align: left;
+}
+
+/* Estilos para el contenedor de login */
 .login-container {
     background: white;
     padding: 2rem;
@@ -69,6 +112,38 @@ body {
     margin-top: 10px;
 }
 
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .contenedor {
+        padding: 10px;
+    }
+
+    #cabecera input[type="button"], #cabecera input[type="date"] {
+        width: 100%;
+        font-size: 14px;
+    }
+
+    table td {
+        padding: 6px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        font-size: 14px;
+    }
+
+    #tablaReservas {
+        padding: 10px;
+    }
+
+    table td {
+        font-size: 12px;
+        padding: 5px;
+    }
+}
+
+/* Estilos adicionales para el formulario */
 @media (max-width: 500px) {
     .login-container {
         padding: 1.5rem;
@@ -78,4 +153,107 @@ body {
     .login-button {
         padding: 12px;
     }
+}
+
+/* Aseguramos que no haya conflictos entre los estilos previos y estos */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+}
+
+h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Estilo específico para el contenedor del formulario */
+#editReservas {
+    width: 80%;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para la tabla del formulario */
+#formReserva .form-table {
+    width: 100%;
+    margin-bottom: 20px;
+    border-spacing: 15px;
+}
+
+#formReserva td {
+    padding: 10px;
+}
+
+/* Estilo para los inputs y selects del formulario */
+#formReserva .input-text, 
+#formReserva .input-select, 
+#formReserva .input-textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+
+#formReserva .input-textarea {
+    height: 100px;
+}
+
+/* Estilos para los botones */
+#formReserva .btn-back,
+#formReserva .btn-modificar,
+#formReserva .btn-submit {
+    padding: 10px 20px;
+    background-color: #667eea;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+#formReserva .btn-back:hover,
+#formReserva .btn-modificar:hover,
+#formReserva .btn-submit:hover {
+    background-color: #5a67d8;
+}
+
+/* Estilo para mostrar/ocultar elementos */
+#editReservas {
+    display: none;
+}
+
+/* Estilo para los campos de entrada cuando están en foco */
+#formReserva input[type="text"]:focus, 
+#formReserva input[type="number"]:focus, 
+#formReserva input[type="date"]:focus, 
+#formReserva select:focus, 
+#formReserva textarea:focus {
+    border-color: #667eea;
+    outline: none;
+}
+
+/* Estilos para mejorar la visualización de la tabla */
+#formReserva td label {
+    font-weight: bold;
+    color: #333;
+}
+
+#formReserva td input[type="text"], 
+#formReserva td input[type="number"], 
+#formReserva td input[type="date"], 
+#formReserva td select {
+    font-size: 14px;
+    padding: 8px;
+    width: 90%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-top: 5px;
 }

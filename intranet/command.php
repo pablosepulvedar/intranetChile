@@ -3,42 +3,28 @@ require 'conexion.php';
 session_start();
 $usuariosesion = $_SESSION['usuario'];
 $cmd = $_REQUEST['cmd'];
+
 switch ($cmd) {
     case 'reservas':
-        $fecha = $_REQUEST['fecha'];
-        $query = "SELECT r.idreserva, v.valor AS hora, r.nombre, r.cantidad, r.total, r.abono, r.usuario, r.observaciones, r.valida, r.telefono, vv.valor AS tipovuelo FROM reservas r
-        JOIN valores v ON r.idhora = v.idvalor
-        JOIN valores vv ON r.tipovuelo = vv.idvalor
-        WHERE fecha = '$fecha' AND eliminado <> 1 ORDER BY hora ASC"; /* el % se usa para seleccionar todos los elementos que se le parezcan */
-        $resultado = mysqli_query($conexion, $query);
+        $fecha = pg_escape_string($_REQUEST['fecha']);
+        //$query = "SELECT r.idreserva, v.valor AS hora, r.nombre, r.cantidad, r.total, r.abono, r.usuario, r.observaciones, r.valida, r.telefono, vv.valor AS tipovuelo 
+        //FROM reservas r
+        //JOIN valores v ON r.idhora = v.idvalor
+        //JOIN valores vv ON r.tipovuelo = vv.idvalor
+        //WHERE fecha = '$fecha' AND eliminado <> 1 ORDER BY hora ASC";
+        $query = "SELECT * FROM reservas ";
+        $resultado = pg_query($conn, $query);
         if (!$resultado) {
-            die('Query Error'.mysqli_error($conexion));
+            die('Query Error: ' . pg_last_error($conn));
         }
         $json = array();
-        while ($row = mysqli_fetch_array($resultado)) {
-            if ($_SESSION['wathsapp'] == false && $_SESSION['usuario'] != $row['usuario']) {
-                $telefono = '';
-            } else {
-                $telefono = $row['telefono'];
-            }
-            $json[] = array(
-                'idreserva'     => $row['idreserva'],
-                'hora'          => $row['hora'],
-                'nombre'        => $row['nombre'],
-                'cantidad'      => $row['cantidad'],
-                'total'         => $row['total'],
-                'abono'         => $row['abono'],
-                'usuario'       => $row['usuario'],
-                'observaciones' => $row['observaciones'],
-                'valida'        => $row['valida'],
-                'telefono'      => $telefono,
-                'tipovuelo'     => $row['tipovuelo']
-            );
+        while ($row = pg_fetch_assoc($resultado)) {
+            //$row['telefono'] = ($_SESSION['wathsapp'] == false && $_SESSION['usuario'] != $row['usuario']) ? '' : $row['telefono'];
+            $json[] = $row;
         }
-        $jsonstring = json_encode($json);
-        echo $jsonstring;
+        echo json_encode($json);
         break;
-    case 'comprobarpermisos':
+    /*case 'comprobarpermisos':
         $idusuario = $_REQUEST['idusuario'];
         $query = "SELECT permisos FROM usuarios WHERE idusuario = '$idusuario'";
         $resultado = mysqli_query($conexion, $query);
@@ -54,22 +40,24 @@ switch ($cmd) {
         $jsonstring = json_encode($json);
         echo $jsonstring;
         break;
+    */
     case 'horarios':
-        $query = "SELECT * FROM valores WHERE tipo = 'horario' ORDER BY orden ASC";
-        $resultado = mysqli_query($conexion, $query);
+        $query = "SELECT * FROM valorescombobox WHERE tipo = 'horario' ORDER BY orden ASC";
+        $resultado = pg_query($conn, $query); // Usamos pg_query para PostgreSQL
         if (!$resultado) {
-            die('Query Error'.mysqli_error($conexion));
+            die('Query Error: ' . pg_last_error($conn)); // Manejo de errores para PostgreSQL
         }
         $json = array();
-        while ($row = mysqli_fetch_array($resultado)) {
+        while ($row = pg_fetch_assoc($resultado)) { // Usamos pg_fetch_assoc para obtener los resultados como un array asociativo
             $json[] = array(
-                'idvalor' => $row['idvalor'],
+                'idvalor' => $row['id'],
                 'valor' => $row['valor']
             );
         }
         $jsonstring = json_encode($json);
         echo $jsonstring;
-        break;
+    break;
+    /*
     case 'insertarReserva':
         $idreserva      = $_REQUEST['idreserva'];
         $valorUni       = $_REQUEST['valorUni'];
@@ -151,7 +139,7 @@ case 'confirm':
                     JOIN valores v 
                     ON r.idhora = v.idvalor
                     WHERE r.valida = 1 AND eliminado <> 1"; /* el % se usa para seleccionar todos los elementos que se le parezcan */
-        $resultado = mysqli_query($conexion, $query);
+/*        $resultado = mysqli_query($conexion, $query);
         if (!$resultado) {
             die('Query Error'.mysqli_error($conexion));
         }
@@ -171,24 +159,24 @@ case 'confirm':
         }
         $jsonstring = json_encode($json);
         echo $jsonstring;
-        break;
+        break;*/
     case 'tipovuelos':
-        $query = "SELECT * FROM valores WHERE tipo = 'vuelo' ORDER BY orden ASC";
-        $resultado = mysqli_query($conexion, $query);
+        $query = "SELECT * FROM valorescombobox WHERE tipo = 'tipo_vuelo' ORDER BY orden ASC";
+        $resultado = pg_query($conn, $query); // Usamos pg_query para PostgreSQL
         if (!$resultado) {
-            die('Query Error'.mysqli_error($conexion));
+            die('Query Error: ' . pg_last_error($conn)); // Manejo de errores para PostgreSQL
         }
         $json = array();
-        while ($row = mysqli_fetch_array($resultado)) {
+        while ($row = pg_fetch_assoc($resultado)) { // Usamos pg_fetch_assoc para obtener los resultados como un array asociativo
             $json[] = array(
-                'idvalor' => $row['idvalor'],
+                'idvalor' => $row['id'], // Cambié 'idvalor' por 'id' ya que eso es lo que devuelve el query
                 'valor' => $row['valor']
             );
         }
         $jsonstring = json_encode($json);
         echo $jsonstring;
-        break;
-    case 'validar':
+    break;
+    /*case 'validar':
         $idreserva = $_REQUEST['idreserva'];
         if ($usuariosesion == 'psepulveda') {
             $query = "UPDATE reservas SET valida=1 WHERE idreserva = ".$idreserva."";
@@ -246,7 +234,7 @@ case 'confirm':
         $pass = md5($pass.'@chileparapente');
 
         $query = "SELECT * FROM usuarios WHERE idusuario = '$usuariosesion' AND password = '$pass'"; /* el % se usa para seleccionar todos los elementos que se le parezcan */
-        $resultado = mysqli_query($conexion, $query);
+/*        $resultado = mysqli_query($conexion, $query);
         if (!$resultado) {
             die('Query Error'.mysqli_error($conexion));
         }
@@ -262,9 +250,8 @@ case 'confirm':
         } else {
             die('Contraseña Incorrecta');
         }
-        break;
+        break;*/
     default:
         echo 'Codigo no registrado';
         break;
 }
-

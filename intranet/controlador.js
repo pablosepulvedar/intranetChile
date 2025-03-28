@@ -62,6 +62,7 @@ function cargarReservas() {
         type: 'GET',
         data: {cmd,fecha}, /*Lo mismo que escribir {search: search} */
         success: function (response) {
+            debugger
             let reservas = JSON.parse(response)
             let tabla = ''
 
@@ -78,17 +79,17 @@ function cargarReservas() {
                 tabla = tabla+'<tr><td style="background-color:'+color+'">'+estado+'</td><td>'+element.hora+'</td>'+'<td>'+element.nombre+'</td>'+'<td>'+element.cantidad+'</td>'+'<td>'+element.total+'</td>'+'<td>'+element.abono+'</td>'+'<td>'+adeudado+'</td><td>'+element.usuario+'</td>'
                 tabla = tabla+'<td style="text-align:left;">'
                 if ($('#idusuario').val() == element.usuario) {
-                    tabla = tabla+'<input type="image" src="../intranet/img/editar.png" style="border: outset;margin:0px 5px 0px 0px;" height="15" width="15"  onclick="modReserva('+element.idreserva+')" title="Editar"/>'
-                    tabla = tabla+'<input type="image" src="../intranet/img/eliminar.png" style="border: outset;margin:0px 5px 0px 0px;" height="15" width="15"  onclick="elimReserva('+element.idreserva+',\''+element.nombre+'\')" title="Eliminar"/>'
+                    tabla = tabla+'<input type="image" src="../intranet/img/editar.png" style="border: outset;margin:0px 5px 0px 0px;background-color: white;" height="20" width="20"  onclick="modReserva('+element.idreserva+')" title="Editar"/>'
+                    tabla = tabla+'<input type="image" src="../intranet/img/eliminar.png" style="border: outset;margin:0px 5px 0px 0px;" height="20" width="20"  onclick="elimReserva('+element.idreserva+',\''+element.nombre+'\')" title="Eliminar"/>'
                 }
                 if (element.observaciones !='') {
-                    tabla = tabla+'<input type="image" src="../intranet/img/observacion.png" style="border: outset;margin:0px 5px 0px 0px;" height="15" width="15"  onclick="alert(\''+element.observaciones+'\')" title="Observacion"/>'  
+                    tabla = tabla+'<input type="image" src="../intranet/img/observacion.png" style="border: outset;margin:0px 5px 0px 0px; background-color: white;" height="20" width="20"  onclick="alert(\''+element.observaciones+'\')" title="Observacion"/>'  
                 }
                 if (estado == 'No Valida' && $('#idusuario').val() == 'psepulveda') {
-                    tabla = tabla+'<input type="image" src="../intranet/img/validar.png" style="border: outset;margin:0px 5px 0px 0px;" height="15" width="15"  onclick="validarReserva('+element.idreserva+')" title="Validar"/>'  
+                    tabla = tabla+'<input type="image" src="../intranet/img/validar.png" style="border: outset;margin:0px 5px 0px 0px; background-color: white;" height="20" width="20"  onclick="validarReserva('+element.idreserva+')" title="Validar"/>'  
                 }
                 if (element.telefono != '') {
-                    tabla = tabla+'<a href="https://wa.me/'+element.telefono+'/?text='+contactar+'"><input type="image" src="../intranet/img/whatsapp.png" style="border: outset;margin:0px 5px 0px 0px;" height="15" width="15"  title="Contactar"/></a>'                      
+                    tabla = tabla+'<a href="https://wa.me/'+element.telefono+'/?text='+contactar+'"><input type="image" src="../intranet/img/whatsapp.png" style="border: outset;margin:0px 5px 0px 0px; background-color: white" height="20" width="20"  title="Contactar"/></a>'                      
                 }
                 if (element.tipovuelo != 'Vuelo Libre') {
                     let value = 'A'
@@ -106,7 +107,7 @@ function cargarReservas() {
                 tabla = tabla+'</td>'
                 tabla = tabla+'</tr>'
             }
-            var jQueryTabla = $("<table><tr><th>Estado</th><th>Hora</th><th>Nombre</th><th>Cantidad</th><th>Total</th><th>Abono</th><th>Adeudado</th><th>Usuario</th><th>Acciones</th></tr>"+tabla+"</table>");
+            var jQueryTabla = $("<table style='width: 100%'><tr><th>Estado</th><th>Hora</th><th>Nombre</th><th>Cantidad</th><th>Total</th><th>Abono</th><th>Adeudado</th><th>Usuario</th><th>Acciones</th></tr>"+tabla+"</table>");
             jQueryTabla.attr({
             id:"reservas"});
             
@@ -115,7 +116,9 @@ function cargarReservas() {
         })
 }
 function modReserva(idreserva) {
-    if (comprobarPermisos('permiso1')){
+    //if (comprobarPermisos('permiso1')){
+    debugger
+    if (true){
         $('#tablaReservas').css('display', 'none')
         $('#cabecera').css('display', 'none')
         $('#idreserva').val(idreserva)
@@ -152,7 +155,7 @@ function modReserva(idreserva) {
                     }
                 })
         }
-        $('#editReservas').css('display','')
+        $('#editReservas').css('display','block')
     } else {
         alert('Sin permisos para Modificar Reservas')
     }
@@ -282,41 +285,50 @@ function limpiarFormulario() {
     $('#email').val('')
 }
 function cargarHorarios() {
-    let cmd = 'horarios'
-    let optionsHorarios ='' 
+    let cmd = 'horarios';
+    let optionsHorarios = ''; 
     $.ajax({
         async: false,
         url: 'command.php',
         type: 'GET',
         data: {cmd}, /*Lo mismo que escribir {search: search} */
         success: function (response) {
-            let horarios = JSON.parse(response)
+            let horarios = JSON.parse(response);
             for (let i = 0; i < horarios.length; i++) {
-                if (i == 0) {
-                    optionsHorarios = optionsHorarios+'<option value="'+horarios[i].idvalor+'" selected>'+horarios[i].valor+'</option>' 
+                if (i === 0) {
+                    // Solo se agrega el primer valor con 'selected'
+                    optionsHorarios += '<option value="'+horarios[i].idvalor+'" selected>'+horarios[i].valor+'</option>';
+                } else {
+                    // Para los demás valores, no se agrega 'selected'
+                    optionsHorarios += '<option value="'+horarios[i].idvalor+'">'+horarios[i].valor+'</option>';
                 }
-                optionsHorarios = optionsHorarios+'<option value="'+horarios[i].idvalor+'">'+horarios[i].valor+'</option>' 
             }
-            $('#hora').prepend(optionsHorarios);
+            $('#hora').html(optionsHorarios); // Usamos .html() para reemplazar todas las opciones.
         }
-    })
+    });
 }
 function cargarTipoVuelo() {
-    let cmd = 'tipovuelos'
-    let optionsHorarios ='' 
+    let cmd = 'tipovuelos';
+    let optionsHorarios = ''; 
     $.ajax({
         async: false,
         url: 'command.php',
         type: 'GET',
         data: {cmd}, /*Lo mismo que escribir {search: search} */
         success: function (response) {
-            let horarios = JSON.parse(response)
-            for (let i = 0; i < horarios.length; i++) {
-                optionsHorarios = optionsHorarios+'<option value="'+horarios[i].idvalor+'">'+horarios[i].valor+'</option>' 
+            let tiposVuelo = JSON.parse(response);
+            for (let i = 0; i < tiposVuelo.length; i++) {
+                if (i === 0) {
+                    // Marcar el primer valor como seleccionado
+                    optionsHorarios += '<option value="'+tiposVuelo[i].idvalor+'" selected>'+tiposVuelo[i].valor+'</option>';
+                } else {
+                    optionsHorarios += '<option value="'+tiposVuelo[i].idvalor+'">'+tiposVuelo[i].valor+'</option>';
+                }
             }
-            $('#tipovuelo').prepend(optionsHorarios);
+            // Usar .html() para reemplazar todas las opciones
+            $('#tipovuelo').html(optionsHorarios); 
         }
-    })
+    });
 }
 function insertarReserva() {
     var idreserva       = $('#idreserva').val()

@@ -1,5 +1,5 @@
 <?php 
-$confirmreserva = $_SESSION['confirmreserva'];
+$confirmreserva = true;//$_SESSION['confirmreserva'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
