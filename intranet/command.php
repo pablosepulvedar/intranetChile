@@ -2,28 +2,76 @@
 require 'conexion.php';
 session_start();
 $usuariosesion = $_SESSION['usuario'];
+$nombreEmpresa = $_SESSION['empresa'];
 $cmd = $_REQUEST['cmd'];
 
 switch ($cmd) {
-    case 'reservas':
-        $fecha = pg_escape_string($_REQUEST['fecha']);
-        //$query = "SELECT r.idreserva, v.valor AS hora, r.nombre, r.cantidad, r.total, r.abono, r.usuario, r.observaciones, r.valida, r.telefono, vv.valor AS tipovuelo 
-        //FROM reservas r
-        //JOIN valores v ON r.idhora = v.idvalor
-        //JOIN valores vv ON r.tipovuelo = vv.idvalor
-        //WHERE fecha = '$fecha' AND eliminado <> 1 ORDER BY hora ASC";
-        $query = "SELECT * FROM reservas ";
-        $resultado = pg_query($conn, $query);
-        if (!$resultado) {
-            die('Query Error: ' . pg_last_error($conn));
-        }
-        $json = array();
-        while ($row = pg_fetch_assoc($resultado)) {
-            //$row['telefono'] = ($_SESSION['wathsapp'] == false && $_SESSION['usuario'] != $row['usuario']) ? '' : $row['telefono'];
-            $json[] = $row;
-        }
-        echo json_encode($json);
-        break;
+case 'reservas':
+    $fecha = $_REQUEST['fecha'];
+
+    $sql = "
+        SELECT 
+            r.*, 
+            vh.valor AS hora,
+            vt.valor AS tipovuelo_texto,
+            u.usuario AS nombre_usuario
+        FROM reservas r
+        LEFT JOIN valorescombobox vh 
+            ON r.idhora = vh.id AND vh.tipo = 'horario'
+        LEFT JOIN valorescombobox vt 
+            ON r.tipovuelo = vt.id AND vt.tipo = 'tipo_vuelo'
+        LEFT JOIN usuarios u
+            ON r.usuario = u.id
+        WHERE r.fecha = $1 AND r.eliminado != 1
+        ORDER BY vh.orden NULLS LAST
+    ";
+
+    $resultado = pg_query_params($conn, $sql, array($fecha));
+
+    if (!$resultado) {
+        die('Query Error: ' . pg_last_error($conn));
+    }
+
+    $json = array();
+    while ($row = pg_fetch_assoc($resultado)) {
+        $json[] = $row;
+    }
+
+    echo json_encode($json);
+break;
+case 'reservasNoValidas':
+    $fecha = $_REQUEST['fecha'];
+
+    $sql = "
+        SELECT 
+            r.*, 
+            vh.valor AS hora,
+            vt.valor AS tipovuelo_texto,
+            u.usuario AS nombre_usuario
+        FROM reservas r
+        LEFT JOIN valorescombobox vh 
+            ON r.idhora = vh.id AND vh.tipo = 'horario'
+        LEFT JOIN valorescombobox vt 
+            ON r.tipovuelo = vt.id AND vt.tipo = 'tipo_vuelo'
+        LEFT JOIN usuarios u
+            ON r.usuario = u.id
+        WHERE r.eliminado != 1 AND r.estado <> 'Valida' 
+        ORDER BY vh.orden NULLS LAST
+    ";
+
+    $resultado = pg_query_params($conn, $sql, array());
+
+    if (!$resultado) {
+        die('Query Error: ' . pg_last_error($conn));
+    }
+
+    $json = array();
+    while ($row = pg_fetch_assoc($resultado)) {
+        $json[] = $row;
+    }
+
+    echo json_encode($json);
+break;
     /*case 'comprobarpermisos':
         $idusuario = $_REQUEST['idusuario'];
         $query = "SELECT permisos FROM usuarios WHERE idusuario = '$idusuario'";
@@ -57,83 +105,147 @@ switch ($cmd) {
         $jsonstring = json_encode($json);
         echo $jsonstring;
     break;
-    /*
-    case 'insertarReserva':
-        $idreserva      = $_REQUEST['idreserva'];
-        $valorUni       = $_REQUEST['valorUni'];
-        $valorDuo       = $_REQUEST['valorDuo'];
-        $checkAlma      = $_REQUEST['checkAlma'] == 'true' ? 1 : 0;
-        $nombre         = $_REQUEST['nombre'];
-        $cantidad       = $_REQUEST['cantidad'];
-        $idHora         = $_REQUEST['idHora'];
-        $fecha          = $_REQUEST['fecha'];
-        $total          = $_REQUEST['total'];
-        $abono          = $_REQUEST['abono'];
-        $adeudado       = $_REQUEST['adeudado'];
-        $observaciones  = $_REQUEST['observaciones'];
-        $usuario        = $_REQUEST['usuario'];
-        $telefono       = $_REQUEST['telefono'];
-        $email          = $_REQUEST['email'];
-        $tipovuelo      = $_REQUEST['tipovuelo'];
-        if ($idHora == '' || $idHora == 0) {
-            die('Error con Horario');
-        }
-        if ($idreserva == 0) {
-            $query = 'INSERT INTO `reservas`(`valorunitario`,`valorpareja`,`vueloalma`,`idhora`,`nombre`,`cantidad`,`total`,`abono`,`adeudado`,`usuario`,`fecha`,`observaciones`,`telefono`,`email`,`tipovuelo`) VALUES ('.$valorUni.','.$valorDuo.','.$checkAlma.','.$idHora.',\''.$nombre.'\','.$cantidad.','.$total.','.$abono.','.$adeudado.',\''.$usuario.'\',\''.$fecha.'\',\''.$observaciones.'\',\''.$telefono.'\',\''.$email.'\',\''.$tipovuelo.'\')';
-        } else {
-            $query = 'UPDATE `reservas` SET `valorunitario`='.$valorUni.',`valorpareja`='.$valorDuo.',`vueloalma`='.$checkAlma.',`idhora`='.$idHora.',`nombre`=\''.$nombre.'\',`cantidad`='.$cantidad.',`total`='.$total.',`abono`='.$abono.',`usuario`=\''.$usuario.'\',`fecha`=\''.$fecha.'\',`observaciones`=\''.$observaciones.'\',`telefono`=\''.$telefono.'\',`email`=\''.$email.'\',`tipovuelo`=\''.$tipovuelo.'\' WHERE idreserva = '.$idreserva.'';
-        }
-        $resultado = mysqli_query($conexion, $query);
-        if (!$resultado) {
-            die('Query Error'.mysqli_error($conexion));
-        }else{
-            if ($idreserva == 0) {
-                echo 'ins ok';
-            }else {
-                echo 'mod ok';
-            } 
-        }
-        break;
-    case 'traerReserva':
-        $idreserva = $_REQUEST['idreserva'];
-        $query = 'SELECT * FROM reservas WHERE idreserva = '.$idreserva.'';
-        $resultado = mysqli_query($conexion, $query);
-        if (!$resultado) {
-            die('Query Error'.mysqli_error($conexion));
-        }
-        $json = array();
-        while ($row = mysqli_fetch_array($resultado)) {
-            $json[] = array(
-                'idreserva'     => $row['idreserva'],
-                'valoruni'      => $row['valorunitario'],
-                'valorduo'      => $row['valorpareja'],
-                'vueloalma'     => $row['vueloalma'],
-                'idhora'        => $row['idhora'],
-                'nombre'        => $row['nombre'],
-                'cantidad'      => $row['cantidad'],
-                'total'         => $row['total'],
-                'abono'         => $row['abono'],
-                'adeudado'      => $row['adeudado'],
-                'usuario'       => $row['usuario'],
-                'fecha'         => $row['fecha'],
-                'observaciones' => $row['observaciones'],
-                'telefono'      => $row['telefono'],
-                'email'         => $row['email'],
-                'tipovuelo'     => $row['tipovuelo']
-            );
-        }
-        $jsonstring = json_encode($json);
-        echo $jsonstring;
-        break;
-    case 'eliminar':
-        $idreserva = $_REQUEST['idreserva'];
-        $query = "UPDATE reservas SET eliminado=1, fechaelimina = now() WHERE idreserva = ".$idreserva."";
-        $resultado = mysqli_query($conexion, $query);
-        if (!$resultado) {
-            die('Query Error'.mysqli_error($conexion));
-        }
-        echo 'ok';
-        break;
+case 'llenarPerfiles':
+    $query = "SELECT * FROM valorescombobox WHERE tipo = 'perfil' ORDER BY orden ASC";
+    $resultado = pg_query($conn, $query); // Usamos pg_query para PostgreSQL
+    if (!$resultado) {
+        die('Query Error: ' . pg_last_error($conn)); // Manejo de errores para PostgreSQL
+    }
+    $json = array();
+    while ($row = pg_fetch_assoc($resultado)) { // Usamos pg_fetch_assoc para obtener los resultados como un array asociativo
+        $json[] = array(
+            'idvalor' => $row['id'],
+            'valor' => $row['valor']
+        );
+    }
+    $jsonstring = json_encode($json);
+    echo $jsonstring;
+break;
+    
+case 'insertarReserva':
+    $idreserva      = $_REQUEST['idreserva'];
+    $valorUni       = $_REQUEST['valorUni'];
+    $valorDuo       = $_REQUEST['valorDuo'];
+    $checkAlma      = $_REQUEST['checkAlma'] == 'true' ? 1 : 0;
+    $nombre         = pg_escape_string($_REQUEST['nombre']);
+    $cantidad       = $_REQUEST['cantidad'];
+    $idHora         = $_REQUEST['idHora'];
+    $fecha          = $_REQUEST['fecha'];
+    $total          = $_REQUEST['total'];
+    $abono          = $_REQUEST['abono'];
+    $adeudado       = $_REQUEST['adeudado'];
+    $observaciones  = pg_escape_string($_REQUEST['observaciones']);
+    $usuario        = pg_escape_string($_REQUEST['usuario']);
+    $telefono       = pg_escape_string($_REQUEST['telefono']);
+    $email          = pg_escape_string($_REQUEST['email']);
+    $tipovuelo      = pg_escape_string($_REQUEST['tipovuelo']);
+
+    if ($idHora == '' || $idHora == 0) {
+        die('Error con Horario');
+    }
+
+    $sqlEmpresa = "SELECT id FROM empresas WHERE nombreempresa = $1";
+    $resEmpresa = pg_query_params($conn, $sqlEmpresa, array($nombreEmpresa));
+    if (!$resEmpresa || pg_num_rows($resEmpresa) == 0) {
+        die("Empresa no encontrada");
+    }
+    $idempresa = pg_fetch_result($resEmpresa, 0, 'id');
+
+    $sqlUsuario = "SELECT id FROM usuarios WHERE usuario = $1 AND idempresa = $2";
+    $resUsuario = pg_query_params($conn, $sqlUsuario, array($usuario, $idempresa));
+    if (!$resUsuario || pg_num_rows($resUsuario) == 0) {
+        die("Usuario no encontrado para la empresa");
+    }
+    $idusuario = pg_fetch_result($resUsuario, 0, 'id');
+
+    if ($idreserva == 0) {
+        $query = "INSERT INTO reservas (
+            valoruni, valorduo, idhora, nombre,
+            cantidad, total, abono, adeudado, usuario,
+            fecha, observaciones, telefono, email, tipovuelo
+        ) VALUES (
+            $valorUni, $valorDuo, $idHora, '$nombre',
+            $cantidad, $total, $abono, $adeudado, '$idusuario',
+            '$fecha', '$observaciones', '$telefono', '$email', '$tipovuelo'
+        )";
+    } else {
+        $query = "UPDATE reservas SET
+            valoruni = $valorUni,
+            valorduo = $valorDuo,
+            idhora = $idHora,
+            nombre = '$nombre',
+            cantidad = $cantidad,
+            total = $total,
+            abono = $abono,
+            adeudado = $adeudado,
+            usuario = '$idusuario',
+            fecha = '$fecha',
+            observaciones = '$observaciones',
+            telefono = '$telefono',
+            email = '$email',
+            tipovuelo = '$tipovuelo'
+        WHERE idreserva = $idreserva";
+    }
+
+    $resultado = pg_query($conn, $query);
+    if (!$resultado) {
+        die('Query Error: ' . pg_last_error($conn));
+    } else {
+        echo $idreserva == 0 ? 'ins ok' : 'mod ok';
+    }
+break;
+case 'traerReserva':
+    $idreserva = $_REQUEST['idreserva'];
+
+    $sql = "
+        SELECT 
+            r.*, 
+            u.usuario AS nombre_usuario
+        FROM reservas r
+        LEFT JOIN usuarios u ON r.usuario = u.id
+        WHERE r.idreserva = $1
+    ";
+    $resultado = pg_query_params($conn, $sql, array($idreserva));
+
+    if (!$resultado) {
+        die('Query Error: ' . pg_last_error($conn));
+    }
+
+    $json = array();
+    while ($row = pg_fetch_assoc($resultado)) {
+        $json[] = array(
+            'idreserva'     => $row['idreserva'],
+            'valoruni'      => $row['valoruni'],
+            'valorduo'      => $row['valorduo'],
+            'idhora'        => $row['idhora'],
+            'nombre'        => $row['nombre'],
+            'cantidad'      => $row['cantidad'],
+            'total'         => $row['total'],
+            'abono'         => $row['abono'],
+            'adeudado'      => $row['adeudado'],
+            'usuario'       => $row['nombre_usuario'],
+            'fecha'         => $row['fecha'],
+            'observaciones' => $row['observaciones'],
+            'telefono'      => $row['telefono'],
+            'email'         => $row['email'],
+            'tipovuelo'     => $row['tipovuelo']
+        );
+    }
+
+    echo json_encode($json);
+break;
+case 'eliminar':
+    $idreserva = $_REQUEST['idreserva'];
+
+    $sql = "UPDATE reservas SET eliminado = 1, fechaelimina = NOW() WHERE idreserva = $1";
+    $resultado = pg_query_params($conn, $sql, array($idreserva));
+
+    if (!$resultado) {
+        die('Query Error: ' . pg_last_error($conn));
+    }
+
+    echo 'ok';
+break;
 case 'confirm':
         $query = "SELECT r.idreserva, v.valor AS hora, r.nombre, r.cantidad, r.total, r.abono, r.usuario, r.observaciones, r.valida FROM reservas r
                     JOIN valores v 
@@ -176,23 +288,25 @@ case 'confirm':
         $jsonstring = json_encode($json);
         echo $jsonstring;
     break;
-    /*case 'validar':
+    case 'validar':
         $idreserva = $_REQUEST['idreserva'];
         if ($usuariosesion == 'psepulveda') {
-            $query = "UPDATE reservas SET valida=1 WHERE idreserva = ".$idreserva."";
-            $resultado = mysqli_query($conexion, $query);
+            // Usamos pg_query para la consulta en PostgreSQL
+            $query = "UPDATE reservas SET estado = 'Valida' WHERE idreserva = $idreserva";
+            $resultado = pg_query($conn, $query); // Realizamos la consulta usando pg_query
+    
             if (!$resultado) {
-                //die('Query Error'.mysqli_error($conexion));
-                $msj = 'error';
+                // Manejo de errores para PostgreSQL
+                $msj = 'error: ' . pg_last_error($conexion);
             } else {
                 $msj = 'Validada con Exito';
-            }  
+            }
         } else {
-            $msj = 'Usted no puede ajecutar esta acción';
+            $msj = 'Usted no puede ejecutar esta acción';
         }
         echo $msj;
-        break;
-    case 'cargarperiodo':
+        break; 
+    /*case 'cargarperiodo':
         $query = "SELECT DATE_FORMAT(fecha, '%m-%Y') AS periodo , DATE_FORMAT(fecha, '%Y-%m') AS periodovalue FROM containstructores WHERE idinstructor = '".$_SESSION['usuario']."' GROUP BY periodo ORDER BY fecha DESC";
             $resultado = mysqli_query($conexion, $query);
 

@@ -62,62 +62,131 @@ function cargarReservas() {
         type: 'GET',
         data: {cmd,fecha}, /*Lo mismo que escribir {search: search} */
         success: function (response) {
-            debugger
             let reservas = JSON.parse(response)
             let tabla = ''
-
-            for (let i = 0; i < reservas.length; i++) {
-                const element = reservas[i]
-                let adeudado = parseInt(element.total)-parseInt(element.abono);
-                let estado = 'No Valida'
-                let color = '#ff0202;'
-                if (element.valida == 1) {
-                    estado = 'Valida'
-                    color = '#7ee382;'
-                }
-                let contactar = 'Buen día! Te recuerdo el vuelo de mañana. Te recomiendo estar de 15 a 30 min de anticipación en el lugar y traer gafas de sol, abrigo, zapatillas o bototos y pantalones largos para una mejor experiencia'
-                tabla = tabla+'<tr><td style="background-color:'+color+'">'+estado+'</td><td>'+element.hora+'</td>'+'<td>'+element.nombre+'</td>'+'<td>'+element.cantidad+'</td>'+'<td>'+element.total+'</td>'+'<td>'+element.abono+'</td>'+'<td>'+adeudado+'</td><td>'+element.usuario+'</td>'
-                tabla = tabla+'<td style="text-align:left;">'
-                if ($('#idusuario').val() == element.usuario) {
-                    tabla = tabla+'<input type="image" src="../intranet/img/editar.png" style="border: outset;margin:0px 5px 0px 0px;background-color: white;" height="20" width="20"  onclick="modReserva('+element.idreserva+')" title="Editar"/>'
-                    tabla = tabla+'<input type="image" src="../intranet/img/eliminar.png" style="border: outset;margin:0px 5px 0px 0px;" height="20" width="20"  onclick="elimReserva('+element.idreserva+',\''+element.nombre+'\')" title="Eliminar"/>'
-                }
-                if (element.observaciones !='') {
-                    tabla = tabla+'<input type="image" src="../intranet/img/observacion.png" style="border: outset;margin:0px 5px 0px 0px; background-color: white;" height="20" width="20"  onclick="alert(\''+element.observaciones+'\')" title="Observacion"/>'  
-                }
-                if (estado == 'No Valida' && $('#idusuario').val() == 'psepulveda') {
-                    tabla = tabla+'<input type="image" src="../intranet/img/validar.png" style="border: outset;margin:0px 5px 0px 0px; background-color: white;" height="20" width="20"  onclick="validarReserva('+element.idreserva+')" title="Validar"/>'  
-                }
-                if (element.telefono != '') {
-                    tabla = tabla+'<a href="https://wa.me/'+element.telefono+'/?text='+contactar+'"><input type="image" src="../intranet/img/whatsapp.png" style="border: outset;margin:0px 5px 0px 0px; background-color: white" height="20" width="20"  title="Contactar"/></a>'                      
-                }
-                if (element.tipovuelo != 'Vuelo Libre') {
-                    let value = 'A'
-                    if (element.tipovuelo == 'Vuelo Del Alma') {
-                        value = 'VA'
-                    }else if(element.tipovuelo == 'Cuponatic'){
-                        value = 'C'
-                    }else if(element.tipovuelo == 'GiftCard'){
-                        value = 'GC'
-                    }else if(element.tipovuelo == 'Otro Cupon'){
-                        value = 'O'
-                    }
-                    tabla = tabla + '<input type="button" value="'+value+'" title="'+element.tipovuelo+'" style="border: outset;margin:0px 5px 0px 0px;height:20px;width:25px;position:absolute;padding:0px 10px 0px 0px;" onclick="alert(\''+element.tipovuelo+'\')">'
-                }
-                tabla = tabla+'</td>'
-                tabla = tabla+'</tr>'
-            }
-            var jQueryTabla = $("<table style='width: 100%'><tr><th>Estado</th><th>Hora</th><th>Nombre</th><th>Cantidad</th><th>Total</th><th>Abono</th><th>Adeudado</th><th>Usuario</th><th>Acciones</th></tr>"+tabla+"</table>");
-            jQueryTabla.attr({
-            id:"reservas"});
             
-            $("#tablaReservas").append(jQueryTabla);
+            if (reservas.length > 0) {
+                for (let i = 0; i < reservas.length; i++) {
+                    const element = reservas[i]
+                    let adeudado = parseInt(element.total)-parseInt(element.abono);
+                    let estado = 'No Valida'
+                    let color = '#ff0202;'
+                    if (element.estado == 'Valida') {
+                        estado = 'Valida'
+                        color = '#7ee382;'
+                    }
+                    let contactar = 'Buen día! Te recuerdo el vuelo de mañana. Te recomiendo estar de 15 a 30 min de anticipación en el lugar y traer gafas de sol, abrigo, zapatillas o bototos y pantalones largos para una mejor experiencia'
+                    tabla = tabla+'<tr><td style="background-color:'+color+'" nowrap>'+estado+'</td><td>'+element.hora+'</td>'+'<td>'+element.nombre+'</td>'+'<td>'+element.cantidad+'</td>'+'<td>'+element.total+'</td>'+'<td>'+element.abono+'</td>'+'<td>'+adeudado+'</td><td>'+element.nombre_usuario+'</td>'
+                    tabla = tabla+'<td style="text-align:left;">'
+                    if ($('#idusuario').val() == element.nombre_usuario) {
+                        tabla = tabla+'<input type="image" src="../intranet/img/editar.png" style="border: outset;margin:0px 5px 0px 0px;background-color: white;" height="20" width="20"  onclick="modReserva('+element.idreserva+')" title="Editar"/>'
+                        tabla = tabla+'<input type="image" src="../intranet/img/eliminar.png" style="border: outset;margin:0px 5px 0px 0px;" height="20" width="20"  onclick="elimReserva('+element.idreserva+',\''+element.nombre+'\')" title="Eliminar"/>'
+                    }
+                    if (element.observaciones !='') {
+                        tabla = tabla+'<input type="image" src="../intranet/img/observacion.png" style="border: outset;margin:0px 5px 0px 0px; background-color: white;" height="20" width="20"  onclick="alert(\''+element.observaciones+'\')" title="Observacion"/>'  
+                    }
+                    if (element.telefono != '') {
+                        tabla = tabla+'<a href="https://wa.me/'+element.telefono+'/?text='+contactar+'"><input type="image" src="../intranet/img/whatsapp.png" style="border: outset;margin:0px 5px 0px 0px; background-color: white" height="20" width="20"  title="Contactar"/></a>'                      
+                    }
+                    if (element.tipovuelo_texto != null) {
+                        let value = 'VI'
+                        if (element.tipovuelo_texto == 'Vuelo Pareja') {
+                            value = 'VP'
+                        }else if(element.tipovuelo_texto == 'Cuponatic'){
+                            value = 'C'
+                        }else if(element.tipovuelo_texto == 'GiftCard'){
+                            value = 'GC'
+                        }else if(element.tipovuelo_texto == 'Otro Cupon'){
+                            value = 'O'
+                        }
+                        tabla = tabla + '<input type="button" value="'+value+'" title="'+element.tipovuelo_texto+'" style="border: outset;margin:0px 5px 0px 0px;height:25px;width:25px;padding:0px 10px 0px 0px;vertical-align: super;" onclick="alert(\''+element.tipovuelo_texto+'\')">'
+                    }
+                    if (estado == 'No Valida' && $('#idusuario').val() == 'psepulveda') {
+                        tabla = tabla+'<input type="image" src="../intranet/img/validar.png" style="border: outset;margin:0px 5px 0px 0px; background-color: white;" height="20" width="20"  onclick="validarReserva('+element.idreserva+')" title="Validar"/>'  
+                    }
+                    tabla = tabla+'</td>'
+                    tabla = tabla+'</tr>'
+                }
+                var jQueryTabla = $("<table style='width: 100%'><tr><th>Estado</th><th>Hora</th><th>Nombre</th><th>Cantidad</th><th>Total</th><th>Abono</th><th>Adeudado</th><th>Usuario</th><th>Acciones</th></tr>"+tabla+"</table>");
+                jQueryTabla.attr({
+                id:"reservas"});
+                $("#tablaReservas").append(jQueryTabla);
+            } else {
+                let sinResultados = $("<table style='width: 100%'><tr><th>Estado</th><th>Hora</th><th>Nombre</th><th>Cantidad</th><th>Total</th><th>Abono</th><th>Adeudado</th><th>Usuario</th><th>Acciones</th></tr><tr><td colspan='9' style='text-align:center; padding: 10px; background-color: #f8d7da; color: #721c24;'>No se encontraron reservas</td></tr></table>");
+                sinResultados.attr({ id: "reservas" });
+                $("#tablaReservas").append(sinResultados);   
             }
-        })
+        }
+    })
+}
+function cargarReservasNoValidas() {
+    var fecha = $("#fecha").val()
+    var cmd = 'reservasNoValidas'
+    $("#tablaReservasNoValidas").empty()
+    $.ajax({
+        url: 'command.php',
+        type: 'GET',
+        data: {cmd,fecha}, /*Lo mismo que escribir {search: search} */
+        success: function (response) {
+            let reservas = JSON.parse(response)
+            let tabla = ''
+            
+            if (reservas.length > 0) {
+                for (let i = 0; i < reservas.length; i++) {
+                    const element = reservas[i]
+                    let adeudado = parseInt(element.total)-parseInt(element.abono);
+                    let estado = 'No Valida'
+                    let color = '#ff0202;'
+                    if (element.estado == 'Valida') {
+                        estado = 'Valida'
+                        color = '#7ee382;'
+                    }
+                    let contactar = 'Buen día! Te recuerdo el vuelo de mañana. Te recomiendo estar de 15 a 30 min de anticipación en el lugar y traer gafas de sol, abrigo, zapatillas o bototos y pantalones largos para una mejor experiencia'
+                    tabla = tabla+'<tr><td style="background-color:'+color+'" nowrap>'+estado+'</td><td>'+element.hora+'</td>'+'<td>'+element.nombre+'</td>'+'<td>'+element.cantidad+'</td>'+'<td>'+element.total+'</td>'+'<td>'+element.abono+'</td>'+'<td>'+adeudado+'</td><td>'+element.nombre_usuario+'</td>'
+                    tabla = tabla+'<td style="text-align:left;">'
+                    if ($('#idusuario').val() == element.nombre_usuario) {
+                        tabla = tabla+'<input type="image" src="../intranet/img/editar.png" style="border: outset;margin:0px 5px 0px 0px;background-color: white;" height="20" width="20"  onclick="modReserva('+element.idreserva+')" title="Editar"/>'
+                        tabla = tabla+'<input type="image" src="../intranet/img/eliminar.png" style="border: outset;margin:0px 5px 0px 0px;" height="20" width="20"  onclick="elimReserva('+element.idreserva+',\''+element.nombre+'\')" title="Eliminar"/>'
+                    }
+                    if (element.observaciones !='') {
+                        tabla = tabla+'<input type="image" src="../intranet/img/observacion.png" style="border: outset;margin:0px 5px 0px 0px; background-color: white;" height="20" width="20"  onclick="alert(\''+element.observaciones+'\')" title="Observacion"/>'  
+                    }
+                    if (element.telefono != '') {
+                        tabla = tabla+'<a href="https://wa.me/'+element.telefono+'/?text='+contactar+'"><input type="image" src="../intranet/img/whatsapp.png" style="border: outset;margin:0px 5px 0px 0px; background-color: white" height="20" width="20"  title="Contactar"/></a>'                      
+                    }
+                    if (element.tipovuelo_texto != null) {
+                        let value = 'VI'
+                        if (element.tipovuelo_texto == 'Vuelo Pareja') {
+                            value = 'VP'
+                        }else if(element.tipovuelo_texto == 'Cuponatic'){
+                            value = 'C'
+                        }else if(element.tipovuelo_texto == 'GiftCard'){
+                            value = 'GC'
+                        }else if(element.tipovuelo_texto == 'Otro Cupon'){
+                            value = 'O'
+                        }
+                        tabla = tabla + '<input type="button" value="'+value+'" title="'+element.tipovuelo_texto+'" style="border: outset;margin:0px 5px 0px 0px;height:25px;width:25px;padding:0px 10px 0px 0px;vertical-align: super;" onclick="alert(\''+element.tipovuelo_texto+'\')">'
+                    }
+                    if (estado == 'No Valida' && $('#idusuario').val() == 'psepulveda') {
+                        tabla = tabla+'<input type="image" src="../intranet/img/validar.png" style="border: outset;margin:0px 5px 0px 0px; background-color: white;" height="20" width="20"  onclick="validarReserva('+element.idreserva+')" title="Validar"/>'  
+                    }
+                    tabla = tabla+'</td>'
+                    tabla = tabla+'</tr>'
+                }
+                var jQueryTabla = $("<table style='width: 100%'><tr><th>Estado</th><th>Hora</th><th>Nombre</th><th>Cantidad</th><th>Total</th><th>Abono</th><th>Adeudado</th><th>Usuario</th><th>Acciones</th></tr>"+tabla+"</table>");
+                jQueryTabla.attr({
+                id:"reservasNoValidas"});
+                $("#tablaReservasNoValidas").append(jQueryTabla);
+            } else {
+                let sinResultados = $("<table style='width: 100%'><tr><th>Estado</th><th>Hora</th><th>Nombre</th><th>Cantidad</th><th>Total</th><th>Abono</th><th>Adeudado</th><th>Usuario</th><th>Acciones</th></tr><tr><td colspan='9' style='text-align:center; padding: 10px; background-color: #f8d7da; color: #721c24;'>No se encontraron reservas</td></tr></table>");
+                sinResultados.attr({ id: "reservasNoValidas" });
+                $("#tablaReservasNoValidas").append(sinResultados);   
+            }
+        }
+    })
 }
 function modReserva(idreserva) {
     //if (comprobarPermisos('permiso1')){
-    debugger
     if (true){
         $('#tablaReservas').css('display', 'none')
         $('#cabecera').css('display', 'none')
@@ -139,7 +208,6 @@ function modReserva(idreserva) {
                     $('#idreserva').val(reserva[0].idreserva)
                     $('#valorUni').val(reserva[0].valoruni)
                     $('#valorDuo').val(reserva[0].valorduo)
-                    $('#alma').val(reserva[0].vueloalma)
                     $('#nombre').val(reserva[0].nombre)
                     $('#cantidad').val(reserva[0].cantidad)
                     $('#hora').val(reserva[0].idhora)
@@ -214,14 +282,6 @@ function comprobarPermisos(permiso) {
             }
         })
     return conpermiso
-}
-function insertarReserva() {
-    var idreserva = $('#idreserva').val()
-    if (idreserva == 0) {
-        alert('insertar nueva')
-    } else {
-        alert('Modificar existente')
-    }
 }
 
 function calcularValores() {
@@ -330,6 +390,29 @@ function cargarTipoVuelo() {
         }
     });
 }
+function cargarPerfil() {
+    let cmd = 'llenarPerfiles';
+    let optionPerfiles = ''; 
+    $.ajax({
+        async: false,
+        url: 'command.php',
+        type: 'GET',
+        data: {cmd}, /*Lo mismo que escribir {search: search} */
+        success: function (response) {
+            let perfiles = JSON.parse(response);
+            for (let i = 0; i < perfiles.length; i++) {
+                if (i === 0) {
+                    // Marcar el primer valor como seleccionado
+                    optionPerfiles += '<option value="'+perfiles[i].idvalor+'" selected>'+perfiles[i].valor+'</option>';
+                } else {
+                    optionPerfiles += '<option value="'+perfiles[i].idvalor+'">'+perfiles[i].valor+'</option>';
+                }
+            }
+            // Usar .html() para reemplazar todas las opciones
+            $('#comboPerfil').html(optionPerfiles); 
+        }
+    });
+}
 function insertarReserva() {
     var idreserva       = $('#idreserva').val()
     var valorUni        = $('#valorUni').val()
@@ -400,6 +483,7 @@ function irmenu(menu) {
     switch (menu) {
         case 'reservas':
             $('#divvalidar').css('display', 'none')
+            $('#tablaReservasNoValidas').css('display', 'none')
             $('#tablaReservas').css('display', '')
             $('#cabecera').css('display', '')
             $('#editReservas').css('display','none')
@@ -408,18 +492,20 @@ function irmenu(menu) {
             cargarReservas()
         break;
         case 'config':
-            inicFecha('fechaconfig')
-            cargarPeriodos()
             $('#tablaReservas').css('display', 'none')
             $('#cabecera').css('display', 'none')
             $('#divvalidar').css('display', 'none')
+            cargarPerfil()
             $('#divconfig').css('display', '')
         break;
         case 'validar':
             $('#tablaReservas').css('display', 'none')
             $('#cabecera').css('display', 'none')
+            $('#tablaReservasNoValidas').css('display', '')
+            cargarReservasNoValidas()
             $('#divvalidar').css('display', '')
             $('#divconfig').css('display', 'none')
+            limpiarFormulario() 
         break;
         default:
             break;
@@ -550,4 +636,17 @@ function cambiarPass() {
             alert(response) 
             }
         })
+}
+function modificarUsuario() {
+    $('#nombreusuario').prop('disabled', false);
+    $('#apellidousuario').prop('disabled', false);
+    $('#email').prop('disabled', false);
+    $('#contraseñaantigua').prop('disabled', false);
+    $('#contraseñanueva').prop('disabled', false);
+    $('#confirmarcontraseña').prop('disabled', false);
+    $('#comboPerfil').prop('disabled', false);
+
+}
+function cerrarSesion() {
+    window.location.href = 'logout.php';
 }

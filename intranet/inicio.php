@@ -1,6 +1,6 @@
 ﻿<?php
 $error = '';
-if (!empty($_REQUEST['error'])) {
+if (!empty($_GET['error'])) {
     $error = '<div class="error-message">El usuario o la contraseña son incorrectos</div>';
 }
 ?>
@@ -85,15 +85,18 @@ if (!empty($_REQUEST['error'])) {
         <form action="intranet/loguear.php" method="POST">
             <div class="input-group">
                 <label for="empresa">Empresa</label>
-                <input type="text" id="empresa" name="empresa" required>
+                <!--<input type="text" id="empresa" name="empresa" required>-->
+                <input type="text" id="empresa" name="empresa" value="gestionreservas" required>
             </div>
             <div class="input-group">
                 <label for="username">Usuario</label>
-                <input type="text" id="username" name="username" required>
+                <!--<input type="text" id="username" name="username" required>-->
+                <input type="text" id="username" name="username" value="psepulveda" required>
             </div>
             <div class="input-group">
                 <label for="password">Contraseña</label>
-                <input type="password" id="password" name="password" required>
+                <!--<input type="password" id="password" name="password" required>-->
+                <input type="password" id="password" name="password" value="admin123" required>
             </div>
             <button type="submit" class="login-button">Ingresar</button>
         </form>

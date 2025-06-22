@@ -12,7 +12,16 @@ $confirmreserva = true;//$_SESSION['confirmreserva'];
 <body>
     <?php if ($confirmreserva) { ?>
         <div id="divvalidar" style="display: none;" >
-            <h1>Interfaz de Validar</h1>
+            <div id="cabecera">
+                <table>
+                    <tr>
+                        <td class="titulo">
+                            <h1>Validación de Reservas</h1>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="tablaReservasNoValidas" style="text-align: center;"></div>
         </div>
     <?php } ?>
 </body>

@@ -4,6 +4,8 @@ if (empty($_SESSION['usuario'])) {
     header('location: ../intranet.php');
 }
 $idusuario = $_SESSION['usuario'];
+$empresa = $_SESSION['empresa'];
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -18,16 +20,11 @@ $idusuario = $_SESSION['usuario'];
     <div class="contenedor">
         <!-- Encabezado con sesión y enlace a logout -->
         <header>
-            <table style="width: 100%;">
-                <tr>
-                    <td style="text-align: end;">
-                        <a href="logout.php">Cerrar Sesión</a>
-                    </td>
-                    <td style="text-align: end; width: 5%">
-                        <p><?=$idusuario?></p>
-                    </td>
-                </tr>
-            </table>
+            <div class="user-info">
+                <span class="user-empresa"><?= isset($empresa) ? $empresa : 'Desconocido' ?></span>
+                <input type="button" value="Cerrar sesión" class="btn-logout" onclick="cerrarSesion()">
+                <span class="user-name">Usuario: <?= isset($idusuario) ? $idusuario : 'Desconocido' ?></span>
+            </div>
         </header>
         
         <?php include 'menus.php'; ?>
@@ -36,14 +33,12 @@ $idusuario = $_SESSION['usuario'];
 
         <div id="cabecera">
             <table>
-                <tr>
+                <tr>                    
                     <td>
                         <input type="button" value="&larr;" onclick="cambiarFecha(0, 'fecha')">
                         <label for="fecha">Fecha</label>
                         <input type="button" value="&rarr;" onclick="cambiarFecha(1, 'fecha')">
                     </td>
-                </tr>
-                <tr>
                     <td>
                         <input type="date" name="fecha" id="fecha">
                         <input type="button" onclick="cargarReservas()" value="Buscar">

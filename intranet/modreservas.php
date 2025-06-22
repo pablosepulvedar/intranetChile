@@ -26,9 +26,9 @@ if($usuario == 'psepulveda'){
             <table class="form-table">
                 <tr>
                     <td><label for="valorUni">Valor Unitario</label></td>
-                    <td><label for="valorDuo">Valor por Pareja</label></td>
-                    <td><input type="button" id="btnValores" class="btn-modificar" value="Modificar Valores" onclick="modificarValores()"></td>
+                    <td nowrap><label for="valorDuo">Valor por Pareja</label></td>
                     <td><label for="tipovuelo">Tipo:</label></td>
+                    <td><input type="button" id="btnValores" class="btn-modificar" value="Modificar Valores" onclick="modificarValores()"></td>
                 </tr>
                 <tr>
                     <td><input type="text" id="valorUni" value='50000' disabled class="input-text"></td>

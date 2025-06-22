@@ -7,10 +7,11 @@
 }
 
 body {
-    justify-content: center;
-    align-items: center;
     height: 100vh;
     background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Contenedor centrado */
@@ -18,23 +19,124 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    /*height: 100vh;*/
     padding: 20px;
-    overflow: hidden;
+    width: 100%;
 }
 
-/* Cabecera con botón de fecha */
-#cabecera {
+/* Cabecera y tabla de reservas */
+#cabecera, #tablaReservas, #tablaReservasNoValidas, #contenedorConfiguraciones {
     width: 100%;
+    margin: 20px auto;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para la cabecera */
+#cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
 }
 
+#cabecera .titulo {
+    text-align: center;
+}
+
+#cabecera input[type="button"] {
+    padding: 10px 20px;
+    background-color: #667eea;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#cabecera input[type="button"]:hover {
+    background-color: #5a67d8;
+}
+
 /* Estilos para la tabla de reservas */
-#tablaReservas {
+#tablaReservas table, #tablaReservasNoValidas table, #contenedorConfiguraciones table {
     width: 100%;
-    margin: 20px auto;
-    text-align: left !important;
+    border-collapse: collapse;
+}
+
+#tablaReservas table th, 
+#tablaReservas table td, 
+#tablaReservasNoValidas table th, 
+#tablaReservasNoValidas table td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+#tablaReservas table th, 
+#tablaReservasNoValidas table th,
+#contenedorConfiguraciones table th {
+    background-color: #f3f4f6;
+    font-weight: bold;
+}
+
+#tablaReservas input[type="button"], 
+#tablaReservasNoValidas input[type="button"],
+#contenedorConfiguraciones input[type="button"] {
+    padding: 8px 15px;
+    background-color: #667eea;
+    color: white;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#tablaReservas input[type="button"]:hover,  
+#tablaReservasNoValidas input[type="button"]:hover,
+#contenedorConfiguraciones input[type="button"]:hover{
+    background-color: #5a67d8;
+}
+
+/* Contenedor de la información del usuario */
+.user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border: 2px solid #667eea;
+    border-radius: 10px;
+    background-color: #fff;
+    width: 200px;
+    margin-top: 10px;
+}
+
+/* Nombre de usuario */
+.user-name {
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #333;
+    text-align: center;
+}
+
+/* Botón de cerrar sesión */
+.btn-logout {
+    padding: 10px;
+    background-color: #667eea;
+    border: none;
+    color: white;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-logout:hover {
+    background-color: #5a67d8;
 }
 
 /* Estilos para los campos de entrada y botones */
@@ -56,75 +158,20 @@ table td {
     text-align: left;
 }
 
-/* Estilos para el contenedor de login */
-.login-container {
-    background: white;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-}
-
-.login-container h2 {
-    margin-bottom: 1rem;
-    color: #333;
-}
-
-.input-group {
-    margin-bottom: 1rem;
-    text-align: left;
-}
-
-.input-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.input-group input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.login-button {
-    width: 100%;
-    padding: 10px;
-    background: #667eea;
-    border: none;
-    color: white;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-.login-button:hover {
-    background: #5a67d8;
-}
-
-.error-message {
-    text-align: center;
-    color: red;
-    margin-top: 10px;
-}
-
 /* Estilos responsivos */
 @media (max-width: 768px) {
-    .contenedor {
+    #tablaReservas table td, #tablaReservas table th {
+        font-size: 14px;
         padding: 10px;
+    }
+    
+    #tablaReservas input[type="button"] {
+        padding: 8px 12px;
     }
 
     #cabecera input[type="button"], #cabecera input[type="date"] {
         width: 100%;
         font-size: 14px;
-    }
-
-    table td {
-        padding: 6px;
     }
 }
 
@@ -194,7 +241,10 @@ h2 {
 /* Estilo para los inputs y selects del formulario */
 #formReserva .input-text, 
 #formReserva .input-select, 
-#formReserva .input-textarea {
+#formReserva .input-textarea,
+#datosUsiario .input-text, 
+#datosUsiario .input-select, 
+#datosUsiario .input-textarea {
     width: 100%;
     padding: 10px;
     border-radius: 5px;
@@ -238,22 +288,4 @@ h2 {
 #formReserva textarea:focus {
     border-color: #667eea;
     outline: none;
-}
-
-/* Estilos para mejorar la visualización de la tabla */
-#formReserva td label {
-    font-weight: bold;
-    color: #333;
-}
-
-#formReserva td input[type="text"], 
-#formReserva td input[type="number"], 
-#formReserva td input[type="date"], 
-#formReserva td select {
-    font-size: 14px;
-    padding: 8px;
-    width: 90%;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-top: 5px;
 }
